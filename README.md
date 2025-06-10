@@ -29,7 +29,7 @@
 
 ---
 
-## 📜 Descrição do Projeto
+# 📜 Descrição do Projeto
 ## 🎯 Objetivo
 
 - Criar um circuito virtual com ESP32 e sensor DHT22 no Wokwi;
@@ -64,6 +64,29 @@ O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para c
 
 ---
 
+## 🧾 Trecho Representativo do Código
+
+O trecho abaixo representa a lógica principal do projeto, responsável por:
+
+- Simular a leitura de temperatura com base no tempo de execução do sistema;
+- Classificar o status do sistema em três níveis: `NORMAL`, `ALERTA_Pre_falha` ou `FALHA_CRITICA`;
+- Exibir os dados simulados no Monitor Serial em formato CSV (separado por vírgulas), facilitando análise posterior ou exportação.
+
+```cpp
+// Trecho representativo da leitura e visualização dos dados
+
+float tempSimulada = simularTemperatura(tempo_atual);  // Gera um valor simulado de temperatura baseado no tempo
+String status = classificarStatus(tempSimulada);       // Classifica a temperatura em NORMAL, ALERTA ou FALHA
+
+// Exibe os dados formatados no Monitor Serial
+Serial.print(tempo_atual);
+Serial.print(",");
+Serial.print(tempSimulada, 1);
+Serial.print(",");
+Serial.println(status);
+```
+---
+
 ## ⚙️ Funcionamento do Sistema
 
 1. O ESP32 simulado lê a temperatura do sensor DHT22 a cada 1 segundo.
@@ -94,11 +117,32 @@ O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para c
 
 ---
 
-## 🔍 Insights Iniciais
+## 🔍 Insights 
+
+O gráfico acima representa a evolução da temperatura simulada ao longo do tempo, com a classificação automática em três categorias de status:
+
+- 🟩 **NORMAL (verde)**: Temperatura abaixo ou igual a 9 °C
+- 🟧 **ALERTA_Pre_falha (laranja)**: Temperatura entre 9.1 °C e 11.9 °C
+- 🟥 **FALHA_CRITICA (vermelho)**: Temperatura acima de 12 °C
+
+### ✅ Observações
+
+- **Início da simulação (até 4839 ms)**: Os dados simulados mostram uma temperatura estável em níveis seguros (entre 5.4 °C e 8.5 °C), classificados como **NORMAL**.
+- **Entre 5839 ms e 9839 ms**: A temperatura entra em uma faixa de risco intermediária (9.6 °C a 11.6 °C), sendo corretamente classificada como **ALERTA_Pre_falha**.
+- **A partir de 10839 ms**: A temperatura ultrapassa os 12 °C e se mantém em níveis críticos durante toda a simulação restante (com picos acima de 14 °C), sendo identificada como **FALHA_CRITICA**.
 
 - As faixas de temperatura simuladas refletem **comportamentos distintos operacionais**, com **zonas claras de risco** após os 10 segundos de simulação.
 - A visualização permite **identificar tendências de aquecimento anormal**, o que, em um cenário real, poderia acionar ações preventivas de manutenção.
-- A classificação automática em tempo real permite embasar **modelos de predição futuros** com base em dados históricos simulados.
+
+Essa análise demonstra que o sistema de simulação e classificação está funcionando conforme esperado, permitindo a identificação clara de mudanças nos níveis térmicos simulados. Isso é essencial para o monitoramento preventivo e tomada de decisão em sistemas embarcados sensíveis à temperatura.
+
+### 📈 Estatísticas das Temperaturas por Status
+
+| Status             | Temperatura Média (°C) | Desvio Padrão (°C) |
+|--------------------|------------------------|---------------------|
+| NORMAL             | 6.54                   | 1.20                |
+| ALERTA_Pre_falha   | 10.44                  | 0.84                |
+| FALHA_CRITICA      | 13.52                  | 0.85                |
 
 ---
 
@@ -110,8 +154,8 @@ O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para c
 │   ├──main.cpp
 │
 ├── diagram.json                # Circuito simulado no Wokwi
-├──  platformio.ini             # Configuração do PlatformIO
-├──  wokwi.toml                 # Caminho para firmware na simulação
+├── platformio.ini              # Configuração do PlatformIO
+├── wokwi.toml                  # Caminho para firmware na simulação
 ├── dados_temperatura.csv       # Registro dos dados
 │
 ├── img/                        # Imagens utilizadas no README
@@ -126,7 +170,9 @@ O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para c
 
 ## 🧠 Conclusão
 
-A simulação do sensor DHT22 no Wokwi permitiu compreender o fluxo completo de aquisição de dados com o ESP32, incluindo geração de dados simulados, categorização automatizada, e preparação para análise em Python. 
+A simulação do sensor DHT22 no Wokwi demonstrou a viabilidade de todo o fluxo de aquisição e classificação de dados no ESP32. Foi implementada a geração de dados simulados com base no tempo de execução, seguida de uma lógica embarcada para categorização automática dos valores de temperatura em três estados operacionais: **NORMAL**, **ALERTA_Pre_falha** e **FALHA_CRITICA**.
+
+Os dados foram exportados para análise em Python, com geração de gráfico e cálculo de média e desvio padrão por categoria. O experimento evidenciou a integração entre hardware embarcado e ferramentas de análise, validando o modelo de monitoramento e detecção de anomalias.
 
 ---
 
