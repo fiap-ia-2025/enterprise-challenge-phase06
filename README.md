@@ -60,7 +60,7 @@ O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para c
 ---
 
 ## 🔌 Esquema do Circuito
-![Circuito DHT22](circuito.png)
+![Circuito DHT22](img/circuito.png)
 
 ---
 
@@ -90,7 +90,7 @@ O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para c
 
 ## 📊 Gráfico Gerado
 
-![Gráfico de Temperatura e Status](grafico.png)
+![Gráfico de Temperatura e Status](img/grafico.png)
 
 ---
 
