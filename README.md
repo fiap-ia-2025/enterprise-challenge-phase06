@@ -90,7 +90,7 @@ O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para c
 
 ## 📊 Gráfico Gerado
 
-![Gráfico de Temperatura e Status](grafico_temperatura_status.png)
+![Gráfico de Temperatura e Status](grafico.png)
 
 ---
 
