@@ -49,13 +49,13 @@
 - **Linguagem:** C++ (com base na plataforma PlataformIO com VS Code)
 - **Sensor Utilizado:**  
   - `DHT22`: sensor digital de temperatura e umidade
-- **Biblioteca `DHT` da Adafruit**
+- **Biblioteca `DHT` da Adafruit e Adafruit Unified Sensor**
 
 ---
 
 ## 📌 Justificativa da Escolha do Sensor
 
-O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para controle ambiental, oferecendo leitura precisa de **temperatura e umidade**, o que permite simular falhas térmicas em ambientes como linhas de produção.
+O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para controle ambiental, tornando-o uma ferramenta ideal para o projeto. Nesse contexto de linhas de envase de cervejas e refrigerantes, onde a precisão é crucial, o DHT22 oferece leitura precisa de **temperatura**, o que permite simular as possíveis falhas térmicas. As indústrias de bebidas enfrentam desafios frequentemente, que podem estar associados a pequenas variações na temperatura, que ao passar despercebidas por sistemas de monitoramentos tradicionais, podem causar interrupções significativas. Ao utilizar o DHT22 podemos recriar e analizar cenários onde essas condições ambientais impactam diretamente na linha de produção, para então desenvolver e testar soluções de predição e automação, capazes de identificar as anomalias e evitar falhas críticas, otimizando as operações nas linhas de envase de cervejas e refrigerantes.
 
 ---
 
@@ -97,6 +97,11 @@ Serial.println(status);
    - **FALHA_CRITICA**: acima de 12,0°C
 4. Os dados são exibidos no **Monitor Serial** no formato CSV:  
    `Tempo_ms,Temperatura_C,Status`
+
+---
+
+## 🔌 Simulação no Wokwi - DHT22 e ESP32
+![Simulação DHT22](img/simulacao.png)
 
 ---
 
@@ -162,6 +167,8 @@ Essa análise demonstra que o sistema de simulação e classificação está fun
 │   ├── circuito.png            # Print do circuito no Wokwi
 │   ├── logo_fiap.png           # Logo da faculdade
 │   ├── grafico.png             # Imagem do gráfico
+│   ├── simulacao.png           # Imagem da simulação no Wokwi
+       
 │
 ├── .gitignore                  # Arquivos/pastas ignorados pelo Git
 └── README.md                   # Documentação geral do projeto
