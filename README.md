@@ -11,7 +11,7 @@
 # 📦 Enterprise Challenge - Sprint 2
 <!-- Título do projeto: curto, claro, direto. Pode destacar o problema e a tecnologia principal -->
 
-## 👥 Grupo 
+## 👥 Grupo 37
 <!-- Nome oficial do grupo, se houver. Pode usar um nome criativo também -->
 
 ## 👨‍🎓 Integrantes:
