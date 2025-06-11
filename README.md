@@ -30,6 +30,16 @@
 ---
 
 # 📜 Descrição do Projeto
+## 🚀 Introdução
+
+Dando continuidade ao projeto voltado à **manutenção preditiva em linhas de envase da indústria de bebidas**, esta segunda etapa teve como foco a **simulação de um sistema embarcado** responsável pela **aquisição local de dados sensoriais**. 
+
+A proposta constitui em construir um circuito simulado com ESP32 e sensor DHT22 no ambiente Wokwi, representando um cenário em que, variações de temperatura poderiam sinalizar diferentes estados operacionais da linha de produção — de operação normal até falhas críticas. Os dados foram classificados localmente e exportados para posterior visualização e análise gráfica, reforçando a importância do monitoramento em tempo real para a detecção precoce de anomalias.
+
+Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challenge-phase03
+
+---
+
 ## 🎯 Objetivo
 
 - Criar um circuito virtual com ESP32 e sensor DHT22 no Wokwi;
@@ -113,24 +123,27 @@ Serial.println(status);
 | 5839     | 10.4           | ALERTA_Pre_falha |
 | 10839    | 13.2           | FALHA_CRITICA    |
 
-
 ---
 
 ## 📊 Gráfico Gerado
 
 ![Gráfico de Temperatura e Status](img/grafico.png)
 
+### 📝 Estrutura e Racional do Gráfico
+
+O gráfico gerado apresenta a variação da temperatura simulada ao longo do tempo, com o eixo X representando o tempo em milissegundos (`Tempo_ms`) e o eixo Y representando a temperatura em graus Celsius (`Temperatura_C`). Para facilitar a interpretação, os pontos foram coloridos conforme a **classificação automática do status operacional**:
+
+- **NORMAL (verde)**: Temperatura abaixo ou igual a 9 °C - operação dentro do esperado.
+- **ALERTA_Pre_falha (laranja)**: Temperatura entre 9.1 °C e 11.9 °C - possível instabilidade térmica, atenção recomendada.
+- **FALHA_CRITICA (vermelho)**: Temperatura acima de 12 °C - – indicativo de falha crítica ou sobreaquecimento, requer ação imediata.
+
+Essa categorização tem como objetivo simular o comportamento de um sistema embarcado que não apenas coleta dados, mas também realiza uma **análise embarcada em tempo real**, classificando os dados com base em faixas de operação seguras ou críticas. Essa estratégia permite que o dispositivo reaja localmente ou envie alertas para a nuvem em casos de falha iminente, antecipando paradas e aumentando a confiabilidade do processo industrial.
+
+O gráfico também fornece uma visão clara da transição entre os diferentes estados, evidenciando o momento em que o sistema passa de uma operação estável para condições críticas.
+
 ---
 
-## 🔍 Insights 
-
-O gráfico acima representa a evolução da temperatura simulada ao longo do tempo, com a classificação automática em três categorias de status:
-
-- 🟩 **NORMAL (verde)**: Temperatura abaixo ou igual a 9 °C
-- 🟧 **ALERTA_Pre_falha (laranja)**: Temperatura entre 9.1 °C e 11.9 °C
-- 🟥 **FALHA_CRITICA (vermelho)**: Temperatura acima de 12 °C
-
-### ✅ Observações
+## ✅ Insights Iniciais
 
 - **Início da simulação (até 4839 ms)**: Os dados simulados mostram uma temperatura estável em níveis seguros (entre 5.4 °C e 8.5 °C), classificados como **NORMAL**.
 - **Entre 5839 ms e 9839 ms**: A temperatura entra em uma faixa de risco intermediária (9.6 °C a 11.6 °C), sendo corretamente classificada como **ALERTA_Pre_falha**.
@@ -162,7 +175,8 @@ Essa análise demonstra que o sistema de simulação e classificação está fun
 ├── platformio.ini              # Configuração do PlatformIO
 ├── wokwi.toml                  # Caminho para firmware na simulação
 ├── dados_temperatura.csv       # Registro dos dados
-│
+├── grafico.ipynb               # Gráfico de temperatura simulada
+│ 
 ├── img/                        # Imagens utilizadas no README
 │   ├── circuito.png            # Print do circuito no Wokwi
 │   ├── logo_fiap.png           # Logo da faculdade
