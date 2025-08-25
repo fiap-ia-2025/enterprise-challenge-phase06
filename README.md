@@ -8,10 +8,10 @@
 
 ---
 
-# 📦 Enterprise Challenge - Sprint 2
+# 📦 Enterprise Challenge - Sprint 3
 <!-- Título do projeto: curto, claro, direto. Pode destacar o problema e a tecnologia principal -->
 
-## 👥 Grupo 37
+## 👥 Grupo 26
 <!-- Nome oficial do grupo, se houver. Pode usar um nome criativo também -->
 
 ## 👨‍🎓 Integrantes:
@@ -32,9 +32,9 @@
 # 📜 Descrição do Projeto
 ## 🚀 Introdução
 
-Dando continuidade ao projeto voltado à **manutenção preditiva em linhas de envase da indústria de bebidas**, esta segunda etapa teve como foco a **simulação de um sistema embarcado** responsável pela **aquisição local de dados sensoriais**. 
+Dando continuidade ao projeto voltado à **manutenção preditiva em linhas de envase da indústria de bebidas**, após a segunda etapa que teve como foco a simulação de um sistema embarcado responsável pela aquisição local de dados sensoriais, inicia-se a terceira etapa. Nesta etapa, os dados captados pelos sensores serão armazenados de forma estruturada para que um algoritmo de Machine Learning busque insights valiosos para a indústria.  
 
-A proposta constitui em construir um circuito simulado com ESP32 e sensor DHT22 no ambiente Wokwi, representando um cenário em que, variações de temperatura poderiam sinalizar diferentes estados operacionais da linha de produção — de operação normal até falhas críticas. Os dados foram classificados localmente e exportados para posterior visualização e análise gráfica, reforçando a importância do monitoramento em tempo real para a detecção precoce de anomalias.
+<!-- Após a construção de um circuito simulado com ESP32 e sensor DHT22 no ambiente Wokwi, representando um cenário em que, variações de temperatura poderiam sinalizar diferentes estados operacionais da linha de produção — de operação normal até falhas críticas. Os dados foram classificados localmente e exportados para posterior visualização e análise gráfica, reforçando a importância do monitoramento em tempo real para a detecção precoce de anomalias.-->
 
 Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challenge-phase03
 
@@ -42,12 +42,14 @@ Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challe
 
 ## 🎯 Objetivo
 
-- Criar um circuito virtual com ESP32 e sensor DHT22 no Wokwi;
-- Simular variações de temperatura conforme diferentes momentos de operação;
+- Criar três circuitos virtuais com ESP32 e sensores no Wokwi;
+- Simular variações de temperatura, pressão e vibração conforme diferentes momentos de operação;
 - Classificar os valores em três categorias: `NORMAL`, `ALERTA_Pre_falha` e `FALHA_CRITICA`;
 - Registrar os dados via Monitor Serial;
 - Exportar os dados simulados para CSV;
-- Gerar um gráfico simples com base nos dados simulados;
+- Gerar uma modelagem de dados relacional;
+- Criar um banco de dados;
+- Treinar um algoritmos de machine learning para obter insights;
 - Documentar todo o processo no GitHub com prints, código e análise.
 
 ---
@@ -163,6 +165,44 @@ Essa análise demonstra que o sistema de simulação e classificação está fun
 | FALHA_CRITICA      | 13.52                  | 0.85                |
 
 ---
+
+# 🔍 Entidades e Atributos
+
+![Fluxograma de Entidades e Atributos](img/entidades-atributos.jpg)
+
+## MAQUINAS
+
+- id_maquina
+- nome (maquina_1, maquina_2, maquina_3)
+- localizacao (sala_1, sala_2)
+
+## SENSORES
+
+- id_sensor
+- id_maquina
+- tipologia (temperatura, pressao, vibracao)
+
+## MEDICAO
+
+- id_medicao
+- id_sensor
+- medicao (resultado da medição dos sensores)
+- data_medicao (quando foi feito a medição)
+
+## CLASSIFICACAO
+
+- id_classe
+- id_medicao
+- classificacao (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
+
+# 🔗 Relacionamentos (Cardinalidades)
+
+| Entidade 1 | Relacionamento | Entidade 2    | Cardinalidade | Observação                                            |
+|------------|----------------|---------------|---------------|-------------------------------------------------------|
+| Maquinas   | possui         | Sensores      | 1:1           | Uma máquina pode medir apenas um sensor               |
+| Sensores   | faz            | Medicao       | 1:N           | Um equipamento de sensores pode fazer várias medições |
+| Medicao    | resulta        | Classificacao | 1:1           | Uma medição pode resultar em apenas uma classificação |
+
 
 ## 📁 Estrutura do Repositório
 
