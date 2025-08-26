@@ -81,7 +81,7 @@ Nesse contexto de linhas de envase de cervejas e refrigerantes, os sensores cita
 ## 🔌 Esquema dos Circuitos
 
 ### MPU5060
-![Circuito MPU5060](img/mpu5060.jpg)
+![Circuito MPU5060](img/mpu5060.JPG)
 
 ---
 
@@ -122,7 +122,7 @@ Serial.println(status);
 ---
 
 ## 🔌 Simulação no Wokwi - DHT22 e ESP32
-![Simulação DHT22](img/simulacao.png)
+![Simulação MPU6050](img/mpu5060_terminal.JPG)
 
 ---
 
