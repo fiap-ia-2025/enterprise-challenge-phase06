@@ -164,6 +164,102 @@ O gráfico também fornece uma visão clara da transição entre os diferentes e
 
 ---
 
+## 🌡️ DS18B20
+![Circuito DS18B20](img/DS18B20.JPG)
+
+### 🧾 Trecho Representativo do Código DS18B20
+
+O trecho abaixo representa a lógica principal do projeto, responsável por:
+
+- Simular a leitura de temperatura de bebidas geladas com envase a frio;
+- Classificar o status do sistema em três níveis: `NORMAL`, `ALERTA_Pre_falha` ou `FALHA_CRITICA`;
+- Exibir os dados simulados no Monitor Serial em formato CSV (separado por vírgulas), facilitando análise posterior ou exportação.
+
+```cpp
+// Trecho representativo da leitura e visualização dos dados do DS18B20
+
+// Definição dos limites para classificação em NORMAL, ALERTA_Pre_falha ou FALHA_CRITICA
+const float TEMPERATURA_NORMAL_MIN = -1.0;
+const float TEMPERATURA_NORMAL_MAX = 6.0;
+const float TEMPERATURA_FALHA_CRITICA_MIN = -6.0;
+const float TEMPERATURA_FALHA_CRITICA_MAX = 10.0;
+
+// Exibe os dados formatados no Monitor Serial
+Serial.print(contador + 1);
+Serial.print(",");
+Serial.print(temperatura);
+Serial.print(",");
+
+// Classificação do status no Monitor Serial
+if (temperatura >= TEMPERATURA_NORMAL_MIN && temperatura <= TEMPERATURA_NORMAL_MAX) {
+  Serial.println("NORMAL");
+} else if (temperatura < TEMPERATURA_NORMAL_MIN || temperatura > TEMPERATURA_NORMAL_MAX) 
+      
+  if (temperatura >= TEMPERATURA_FALHA_CRITICA_MIN && temperatura <= TEMPERATURA_FALHA_CRITICA_MAX) {
+      Serial.println("ALERTA_Pre_falha");
+  } else {
+      Serial.println("FALHA_CRITICA");
+      }
+
+```
+---
+
+### ⚙️ Funcionamento do Sistema DS18B20
+
+1. O ESP32 simulado lê a temperatura da máquina a cada 1 segundo através do DS18B20.
+2. A temperatura é simulada com valores variados, conforme a oscilação.
+3. Os dados são classificados automaticamente em três status:
+   - **NORMAL**: até 6ºC
+   - **ALERTA_Pre_falha**: de 6ºC até 10ºC
+   - **FALHA_CRITICA**: acima de 10ºC
+4. Os dados são exibidos no **Monitor Serial** no formato CSV:  
+   `ID, Temperatura, Status`
+
+---
+
+### 🔌 Simulação no Wokwi - DS18B20 e ESP32
+![Simulação DS18B20](img/ds18b20_terminal.JPG)
+
+
+### 🧪 Exemplo de Dados Coletados DS18B20
+
+| ID | Temperatura | Status          |
+|----------|----------------|------------------|
+| 17   | 1.37          | NORMAL           |
+| 65   | 8.38         | ALERTA_Pre_falha |
+| 118   | 14.25         | FALHA_CRITICA    |
+
+### 📝 Estrutura e Racional do Gráfico DS18B20
+
+![Gráfico de Temperatura](img/grafico_.png)
+
+### 📝 Estrutura e Racional do Gráfico DS18B20
+
+O gráfico gerado apresenta a variação da aceleração simulada ao longo das medições, com o eixo X representando as medições (totalizando 500 medições) e o eixo Y representando a vibração em LSB/g (Least Significant Bit por g). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
+
+- **NORMAL (verde)**: Aceleração abaixo de 16500.0LSB/g - operação dentro do esperado.
+- **ALERTA_Pre_falha (laranja)**: Aceleração de 16500.0LSB/g até 25000.0LSB/g - possível acerelação demasiada, atenção recomendada.
+- **FALHA_CRITICA (vermelho)**: Aceleração acima de 25000.0LSB/g - – indicativo de falha crítica, requer ação imediata.
+
+Essa categorização tem como objetivo simular o comportamento de um sistema embarcado que não apenas coleta dados, mas também realiza uma **análise embarcada**, classificando os dados com base em faixas de operação seguras ou críticas. Essa estratégia permite que o dispositivo reaja localmente ou envie alertas para a nuvem em casos de falha iminente, antecipando paradas e aumentando a confiabilidade do processo industrial.
+
+O gráfico também fornece uma visão clara da transição entre os diferentes estados, evidenciando o momento em que o sistema passa de uma operação estável para condições críticas.
+
+
+## 〰️ HC-SR04
+
+### 🧾 Trecho Representativo do Código HC-SR04
+
+### ⚙️ Funcionamento do Sistema HC-SR04
+
+### 🔌 Simulação no Wokwi - HC-SR04 e ESP32
+
+### 🧪 Exemplo de Dados Coletados HC-SR04
+
+### 📝 Estrutura e Racional do Gráfico HC-SR04
+
+---
+
 ## ✅ Insights Iniciais
 
 - **Início da simulação (até 4839 ms)**: Os dados simulados mostram uma temperatura estável em níveis seguros (entre 5.4 °C e 8.5 °C), classificados como **NORMAL**.
