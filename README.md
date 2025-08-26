@@ -80,75 +80,85 @@ Nesse contexto de linhas de envase de cervejas e refrigerantes, os sensores cita
 
 ## 🔌 Esquema dos Circuitos
 
-### MPU5060
+## 💨 MPU5060
 ![Circuito MPU5060](img/mpu5060.JPG)
 
 ---
 
-## 🧾 Trecho Representativo do Código
+### 🧾 Trecho Representativo do Código MPU6050
 
 O trecho abaixo representa a lógica principal do projeto, responsável por:
 
-- Simular a leitura de temperatura com base no tempo de execução do sistema;
+- Simular a leitura de vibração com base na aceleração detectada na máquina;
 - Classificar o status do sistema em três níveis: `NORMAL`, `ALERTA_Pre_falha` ou `FALHA_CRITICA`;
 - Exibir os dados simulados no Monitor Serial em formato CSV (separado por vírgulas), facilitando análise posterior ou exportação.
 
 ```cpp
-// Trecho representativo da leitura e visualização dos dados
+// Trecho representativo da leitura e visualização dos dados do MPU5060
 
-float tempSimulada = simularTemperatura(tempo_atual);  // Gera um valor simulado de temperatura baseado no tempo
-String status = classificarStatus(tempSimulada);       // Classifica a temperatura em NORMAL, ALERTA ou FALHA
+// Definição dos limites para classificação em NORMAL, ALERTA_Pre_falha ou FALHA_CRITICA
+const double LIMITE_ALERTA = 16500.0; 
+const double LIMITE_FALHA = 25000.0;
 
 // Exibe os dados formatados no Monitor Serial
-Serial.print(tempo_atual);
+Serial.print(contador + 1);
 Serial.print(",");
-Serial.print(tempSimulada, 1);
+Serial.print(accTotal);
 Serial.print(",");
-Serial.println(status);
+
+// Classificação do status no Monitor Serial
+if (accTotal < LIMITE_ALERTA) {
+  Serial.println("NORMAL");
+} else if (accTotal < LIMITE_FALHA) {
+  Serial.println("ALERTA_Pre_falha");
+} else {
+  Serial.println("FALHA_CRITICA");
+}
+
 ```
 ---
 
-## ⚙️ Funcionamento do Sistema
+### ⚙️ Funcionamento do Sistema MPU6050
 
-1. O ESP32 simulado lê a temperatura do sensor DHT22 a cada 1 segundo.
-2. A temperatura é simulada com valores variados, dependendo do tempo de execução.
+1. O ESP32 simulado lê a aceleração da máquina a cada 1 segundo através do MPU6050.
+2. A vibração é simulada com valores variados, dependendo da movimentação dos eixos X, Y e Z.
 3. Os dados são classificados automaticamente em três status:
-   - **NORMAL**: até 9,0°C
-   - **ALERTA_Pre_falha**: de 9,1°C até 11,9°C
-   - **FALHA_CRITICA**: acima de 12,0°C
+   - **NORMAL**: até 16500.0LSB/g
+   - **ALERTA_Pre_falha**: de 16500.0LSB/g até 25000.0LSB/g
+   - **FALHA_CRITICA**: acima de 25000.0LSB/g
 4. Os dados são exibidos no **Monitor Serial** no formato CSV:  
-   `Tempo_ms,Temperatura_C,Status`
+   `ID, Aceleracao_Total, Status`
 
 ---
 
-## 🔌 Simulação no Wokwi - DHT22 e ESP32
+### 🔌 Simulação no Wokwi - MPU5060 e ESP32
 ![Simulação MPU6050](img/mpu5060_terminal.JPG)
 
 ---
 
-## 🧪 Exemplo de Dados Coletados
+### 🧪 Exemplo de Dados Coletados MPU6050
 
-| Tempo_ms | Temperatura_C | Status           |
+| ID | Aceleracao_Total| Status          |
 |----------|----------------|------------------|
-| 485      | 6.3            | NORMAL           |
-| 5839     | 10.4           | ALERTA_Pre_falha |
-| 10839    | 13.2           | FALHA_CRITICA    |
+| 32   | 5049.47           | NORMAL           |
+| 97    | 18426.64         | ALERTA_Pre_falha |
+| 213    | 52453.14         | FALHA_CRITICA    |
 
 ---
 
-## 📊 Gráfico Gerado
+### 📊 Gráfico Gerado MPU5060
 
-![Gráfico de Temperatura e Status](img/grafico.png)
+![Gráfico de Vibração](img/grafico_mpu5060.png)
 
-### 📝 Estrutura e Racional do Gráfico
+### 📝 Estrutura e Racional do Gráfico MPU5060
 
-O gráfico gerado apresenta a variação da temperatura simulada ao longo do tempo, com o eixo X representando o tempo em milissegundos (`Tempo_ms`) e o eixo Y representando a temperatura em graus Celsius (`Temperatura_C`). Para facilitar a interpretação, os pontos foram coloridos conforme a **classificação automática do status operacional**:
+O gráfico gerado apresenta a variação da aceleração simulada ao longo das medições, com o eixo X representando as medições (totalizando 500 medições) e o eixo Y representando a vibração em LSB/g (Least Significant Bit por g). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
 
-- **NORMAL (verde)**: Temperatura abaixo ou igual a 9 °C - operação dentro do esperado.
-- **ALERTA_Pre_falha (laranja)**: Temperatura entre 9.1 °C e 11.9 °C - possível instabilidade térmica, atenção recomendada.
-- **FALHA_CRITICA (vermelho)**: Temperatura acima de 12 °C - – indicativo de falha crítica ou sobreaquecimento, requer ação imediata.
+- **NORMAL (verde)**: Aceleração abaixo de 16500.0LSB/g - operação dentro do esperado.
+- **ALERTA_Pre_falha (laranja)**: Aceleração de 16500.0LSB/g até 25000.0LSB/g - possível acerelação demasiada, atenção recomendada.
+- **FALHA_CRITICA (vermelho)**: Aceleração acima de 25000.0LSB/g - – indicativo de falha crítica, requer ação imediata.
 
-Essa categorização tem como objetivo simular o comportamento de um sistema embarcado que não apenas coleta dados, mas também realiza uma **análise embarcada em tempo real**, classificando os dados com base em faixas de operação seguras ou críticas. Essa estratégia permite que o dispositivo reaja localmente ou envie alertas para a nuvem em casos de falha iminente, antecipando paradas e aumentando a confiabilidade do processo industrial.
+Essa categorização tem como objetivo simular o comportamento de um sistema embarcado que não apenas coleta dados, mas também realiza uma **análise embarcada**, classificando os dados com base em faixas de operação seguras ou críticas. Essa estratégia permite que o dispositivo reaja localmente ou envie alertas para a nuvem em casos de falha iminente, antecipando paradas e aumentando a confiabilidade do processo industrial.
 
 O gráfico também fornece uma visão clara da transição entre os diferentes estados, evidenciando o momento em que o sistema passa de uma operação estável para condições críticas.
 
