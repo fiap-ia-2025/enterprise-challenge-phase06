@@ -1,50 +1,75 @@
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
+// Para a medição de vibração com MPU5060
 
-#define DHTPIN 6       // Pino conectado ao sensor
-#define DHTTYPE DHT22   // Modelo do sensor: DHT22
+#include <Wire.h>
+#include <math.h>
 
-DHT dht(DHTPIN, DHTTYPE);  // Instancia o sensor
+// Endereço do MPU6050
+const int MPU6050_ADDR = 0x68;
+
+// Variáveis para armazenar os dados de aceleração
+int16_t accX, accY, accZ;
+double accTotal;
+
+// Definição dos limites para classificação
+const double LIMITE_ALERTA = 16500.0; 
+const double LIMITE_FALHA = 25000.0;
+
+// Variável para contar as medições
+int contador = 0;
+const int num_medicoes = 500;
 
 void setup() {
+  // inicia a comunicação serial para inserir os dados:
   Serial.begin(115200);
-  Serial.println("Tempo_ms,Temperatura_C,Status");
-  dht.begin();  // Inicializa o sensor
+    // inicia a comunicação I2C
+  Wire.begin();
+  // inicia a comunicação com MPU6050
+  Wire.beginTransmission(MPU6050_ADDR);
+  Wire.write(0x6B); // Endereço do registro de gerenciamento de energia
+  Wire.write(0);    // Desliga o modo de suspensão (sleep mode)
+  Wire.endTransmission(true);
+  
+  Serial.println("MPU6050 iniciado com sucesso!");
+  
+  // Imprime o cabeçalho das colunas para o .csv
+  Serial.println("ID,Aceleracao_Total,Status");
 }
 
-float simularTemperatura(unsigned long tempo_ms) {
-  if (tempo_ms < 5000) {
-    return 5.0 + random(0, 40) / 10.0;
-  } else if (tempo_ms < 10000) {
-    return 9.1 + random(0, 28) / 10.0;
-  } else {
-    return 12.0 + random(0, 30) / 10.0;
-  }
-}
-
-String classificarStatus(float temperatura) {
-  if (temperatura <= 9.0) {
-    return "NORMAL";
-  } else if (temperatura <= 11.9) {
-    return "ALERTA_Pre_falha";
-  } else {
-    return "FALHA_CRITICA";
-  }
-}
 
 void loop() {
-  unsigned long tempo_atual = millis();
-
-  float tempSimulada = simularTemperatura(tempo_atual);
-  String status = classificarStatus(tempSimulada);
-
+  if (contador < num_medicoes)
+  // Solicita 6 bytes de dados do sensor
+  Wire.beginTransmission(MPU6050_ADDR);
+  Wire.write(0x3B); 
+  Wire.endTransmission(false);
+  Wire.requestFrom(MPU6050_ADDR, 6, true);
   
-  Serial.print(tempo_atual);
-  Serial.print(",");
-  Serial.print(tempSimulada, 1);
-  Serial.print(",");
-  Serial.println(status);
+  // Lê e combina os bytes
+  accX = Wire.read() << 8 | Wire.read();
+  accY = Wire.read() << 8 | Wire.read();
+  accZ = Wire.read() << 8 | Wire.read();
+  
+  // Calcula a aceleração total (vetor soma)
+  // Usamos o teorema de Pitágoras em 3D para isso
+  accTotal = sqrt(pow(accX, 2) + pow(accY, 2) + pow(accZ, 2));
 
-  delay(1000);
+  // --- Classificação dos Resultados ---
+    Serial.print(contador + 1);
+    Serial.print(",");
+    Serial.print(accTotal);
+    Serial.print(",");
+
+
+  if (accTotal < LIMITE_ALERTA) {
+    Serial.println("NORMAL");
+  } else if (accTotal < LIMITE_FALHA) {
+    Serial.println("ALERTA_Pre_falha");
+  } else {
+    Serial.println("FALHA_CRITICA");
+  }
+
+    contador++;
+
+    delay(1000);
 }
 

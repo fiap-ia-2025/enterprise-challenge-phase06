@@ -43,7 +43,7 @@ Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challe
 ## 🎯 Objetivo
 
 - Criar três circuitos virtuais com ESP32 e sensores no Wokwi;
-- Simular variações de temperatura, pressão e vibração conforme diferentes momentos de operação;
+- Simular variações de temperatura, vibração e nível de enchimento conforme diferentes momentos de operação;
 - Classificar os valores em três categorias: `NORMAL`, `ALERTA_Pre_falha` e `FALHA_CRITICA`;
 - Registrar os dados via Monitor Serial;
 - Exportar os dados simulados para CSV;
@@ -60,19 +60,28 @@ Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challe
 - **Microcontrolador:** ESP32 (simulado)
 - **Linguagem:** C++ (com base na plataforma PlataformIO com VS Code)
 - **Sensor Utilizado:**  
-  - `DHT22`: sensor digital de temperatura e umidade
-- **Biblioteca `DHT` da Adafruit e Adafruit Unified Sensor**
+  - `DS18B20`: sensor de temperatura digital
+  - `MPU6050`: acelerômetro e giroscópio
+  - `HC-SR04`: sensor de distância ultrassônico
 
 ---
 
 ## 📌 Justificativa da Escolha do Sensor
 
-O sensor **DHT22** foi escolhido por sua ampla utilização na indústria para controle ambiental, tornando-o uma ferramenta ideal para o projeto. Nesse contexto de linhas de envase de cervejas e refrigerantes, onde a precisão é crucial, o DHT22 oferece leitura precisa de **temperatura**, o que permite simular as possíveis falhas térmicas. As indústrias de bebidas enfrentam desafios frequentemente, que podem estar associados a pequenas variações na temperatura, que ao passar despercebidas por sistemas de monitoramentos tradicionais, podem causar interrupções significativas. Ao utilizar o DHT22 podemos recriar e analizar cenários onde essas condições ambientais impactam diretamente na linha de produção, para então desenvolver e testar soluções de predição e automação, capazes de identificar as anomalias e evitar falhas críticas, otimizando as operações nas linhas de envase de cervejas e refrigerantes.
+O sensor **DS18B20** foi escolhido para este projeto, pois oferece leitura precisa de **temperatura** das máquinas e não requer calibração externa, isso garante leituras confiáveis para o monitoramento de processos de envase na indústria. <br> 
+
+Já o sensor **MPU6050**, utilizado para medir a vibração da máquina, realiza a medição de aceleramento nos três eixos X, Y e Z, detectando a intensidade e frequência das vibrações. <br> 
+
+Por último, o sensor **HC-SR04** para fazer a medição do nível de enchimento sem fazer contato com o produto. Ele fica posicionado acima do recipiente, emite uma onda sonora e realiza a medição do tempo que o eco leva para retornar, e assim calcula-se a distância até a superfície do líquido. <br>
+
+Nesse contexto de linhas de envase de cervejas e refrigerantes, os sensores citados acima, permitem simular as possíveis falhas durante o processo. As indústrias de bebidas enfrentam desafios frequentemente, que podem estar associados a pequenas variações na temperatura, vibração ou quantidade de líquido inserido nos produtos, que ao passar despercebidas por sistemas de monitoramentos tradicionais, podem causar interrupções significativas. Ao utilizar os sensores podemos recriar e analizar cenários onde essas condições impactam diretamente na linha de produção, para então desenvolver e testar soluções de predição e automação, capazes de identificar as anomalias e evitar falhas críticas, otimizando as operações nas linhas de envase de cervejas e refrigerantes.
 
 ---
 
-## 🔌 Esquema do Circuito
-![Circuito DHT22](img/circuito.png)
+## 🔌 Esquema dos Circuitos
+
+### MPU5060
+![Circuito MPU5060](img/mpu5060.jpg)
 
 ---
 
