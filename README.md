@@ -158,10 +158,6 @@ O gráfico gerado apresenta a variação da aceleração simulada ao longo das m
 - **ALERTA_Pre_falha (laranja)**: Aceleração de 16500.0LSB/g até 25000.0LSB/g - possível acerelação demasiada, atenção recomendada.
 - **FALHA_CRITICA (vermelho)**: Aceleração acima de 25000.0LSB/g - – indicativo de falha crítica, requer ação imediata.
 
-Essa categorização tem como objetivo simular o comportamento de um sistema embarcado que não apenas coleta dados, mas também realiza uma **análise embarcada**, classificando os dados com base em faixas de operação seguras ou críticas. Essa estratégia permite que o dispositivo reaja localmente ou envie alertas para a nuvem em casos de falha iminente, antecipando paradas e aumentando a confiabilidade do processo industrial.
-
-O gráfico também fornece uma visão clara da transição entre os diferentes estados, evidenciando o momento em que o sistema passa de uma operação estável para condições críticas.
-
 ---
 
 ## 🌡️ DS18B20
@@ -229,60 +225,115 @@ if (temperatura >= TEMPERATURA_NORMAL_MIN && temperatura <= TEMPERATURA_NORMAL_M
 | 65   | 8.38         | ALERTA_Pre_falha |
 | 118   | 14.25         | FALHA_CRITICA    |
 
+### 📊 Gráfico Gerado DS18B20
+
+![Gráfico de Temperatura](img/grafico_DS18B20.png)
+
 ### 📝 Estrutura e Racional do Gráfico DS18B20
 
-![Gráfico de Temperatura](img/grafico_.png)
+O gráfico gerado apresenta a variação da temnperatura simulada ao longo das medições (totalizando 500 medições). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
 
-### 📝 Estrutura e Racional do Gráfico DS18B20
-
-O gráfico gerado apresenta a variação da aceleração simulada ao longo das medições, com o eixo X representando as medições (totalizando 500 medições) e o eixo Y representando a vibração em LSB/g (Least Significant Bit por g). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
-
-- **NORMAL (verde)**: Aceleração abaixo de 16500.0LSB/g - operação dentro do esperado.
-- **ALERTA_Pre_falha (laranja)**: Aceleração de 16500.0LSB/g até 25000.0LSB/g - possível acerelação demasiada, atenção recomendada.
-- **FALHA_CRITICA (vermelho)**: Aceleração acima de 25000.0LSB/g - – indicativo de falha crítica, requer ação imediata.
-
-Essa categorização tem como objetivo simular o comportamento de um sistema embarcado que não apenas coleta dados, mas também realiza uma **análise embarcada**, classificando os dados com base em faixas de operação seguras ou críticas. Essa estratégia permite que o dispositivo reaja localmente ou envie alertas para a nuvem em casos de falha iminente, antecipando paradas e aumentando a confiabilidade do processo industrial.
-
-O gráfico também fornece uma visão clara da transição entre os diferentes estados, evidenciando o momento em que o sistema passa de uma operação estável para condições críticas.
+- **NORMAL (verde)**: Temperatura abaixo de 6ºC - operação dentro do esperado.
+- **ALERTA_Pre_falha (laranja)**: Temmperatura de 6ºC até 10ºC - possível acerelação demasiada, atenção recomendada.
+- **FALHA_CRITICA (vermelho)**: Temperatura acima de 10ºC - – indicativo de falha crítica, requer ação imediata.
 
 
 ## 〰️ HC-SR04
+![Circuito HC-SR04](img/HC-SR04.JPG)
+
 
 ### 🧾 Trecho Representativo do Código HC-SR04
 
+O trecho abaixo representa a lógica principal do projeto, responsável por:
+
+- Simular a leitura de nível de enchimento dos recipientes de bebidas;
+- Classificar o status do sistema em três níveis: `NORMAL`, `ALERTA_Pre_falha` ou `FALHA_CRITICA`;
+- Exibir os dados simulados no Monitor Serial em formato CSV (separado por vírgulas), facilitando análise posterior ou exportação.
+
+```cpp
+// Trecho representativo da leitura e visualização dos dados do HC-SR04
+
+// Definição dos limites para classificação em NORMAL, ALERTA_Pre_falha ou FALHA_CRITICA
+const float ALTURA_MAXIMA = 20.0;
+const float NIVEL_NORMAL_MIN = 19.0;
+const float NIVEL_NORMAL_MAX = 20.0;
+const float NIVEL_ALERTA_MIN = 16.0;
+const float NIVEL_ALERTA_MAX = 19.0;
+
+// Exibe os dados formatados no Monitor Serial
+ Serial.print(contador + 1);
+    Serial.print(",");
+    Serial.print(distancia_cm);
+    Serial.print(",");
+    Serial.print(nivel_cm);
+    Serial.print(",");
+
+ // Classificação do status no Monitor Serial   
+    if (nivel_cm >= NIVEL_NORMAL_MIN && nivel_cm <= NIVEL_NORMAL_MAX) {
+      Serial.println("NORMAL");
+    } else if (nivel_cm >= NIVEL_ALERTA_MIN && nivel_cm < NIVEL_NORMAL_MIN) {
+      Serial.println("ALERTA_Pre_falha");
+    } else {
+      Serial.println("FALHA_CRITICA");
+    }
+
+```
+
+---
+
 ### ⚙️ Funcionamento do Sistema HC-SR04
 
+1. O ESP32 simulado lê a distância do líquido até o sensor HC-SR04 a cada 1 segundo.
+2. A temperatura é simulada com valores variados, conforme a oscilação.
+3. Os dados são classificados automaticamente em três status:
+   - **NORMAL**: de 19 a 20cm
+   - **ALERTA_Pre_falha**: de 16 a 18cm
+   - **FALHA_CRITICA**: abaixo de 16cm
+4. Os dados são exibidos no **Monitor Serial** no formato CSV:  
+   `ID, Distancia_cm, Nivel_cm, Status`
+
+---
+
 ### 🔌 Simulação no Wokwi - HC-SR04 e ESP32
+![Simulação HC-SR04](img/HC-SR04_terminal.JPG)
 
 ### 🧪 Exemplo de Dados Coletados HC-SR04
 
+| ID | Distancia_cm | Nivel_cm         | Status          |
+|----|--------------|------------------|-----------------|
+| 29 | 1.94         | 23.06            | NORMAL          |
+| 99 | 7.97         | 17.03            | ALERTA_Pre_falha|
+| 213| 9.07         | 15.93            | FALHA_CRITICA   |
+
+### 📊 Gráfico Gerado HC-SR04
+
+![Gráfico de Nível de Enchimento](img/grafico_HC-SR04.png)
+
 ### 📝 Estrutura e Racional do Gráfico HC-SR04
+
+O gráfico gerado apresenta a variação do nível de enchimentos dos recipientes simulado ao longo das medições (totalizando 500 medições). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
+
+- **NORMAL (verde)**: Nível de 19 a 20cm - operação dentro do esperado.
+- **ALERTA_Pre_falha (laranja)**: Nível de 16 a 18cm - possível acerelação demasiada, atenção recomendada.
+- **FALHA_CRITICA (vermelho)**: Nível abaixo de 16cm - – indicativo de falha crítica, requer ação imediata.
 
 ---
 
 ## ✅ Insights Iniciais
 
-- **Início da simulação (até 4839 ms)**: Os dados simulados mostram uma temperatura estável em níveis seguros (entre 5.4 °C e 8.5 °C), classificados como **NORMAL**.
-- **Entre 5839 ms e 9839 ms**: A temperatura entra em uma faixa de risco intermediária (9.6 °C a 11.6 °C), sendo corretamente classificada como **ALERTA_Pre_falha**.
-- **A partir de 10839 ms**: A temperatura ultrapassa os 12 °C e se mantém em níveis críticos durante toda a simulação restante (com picos acima de 14 °C), sendo identificada como **FALHA_CRITICA**.
+- **NORMAL**
+- **ALERTA_Pre_falha**
+- **FALHA_CRITICA**
 
-- As faixas de temperatura simuladas refletem **comportamentos distintos operacionais**, com **zonas claras de risco** após os 10 segundos de simulação.
-- A visualização permite **identificar tendências de aquecimento anormal**, o que, em um cenário real, poderia acionar ações preventivas de manutenção.
+Essa análise demonstra que o sistema de simulação e classificação está funcionando conforme esperado, permitindo a identificação clara de mudanças na vibração, temperatura e nível de enchimento. Isso é essencial para o monitoramento preventivo e tomada de decisão.
 
-Essa análise demonstra que o sistema de simulação e classificação está funcionando conforme esperado, permitindo a identificação clara de mudanças nos níveis térmicos simulados. Isso é essencial para o monitoramento preventivo e tomada de decisão em sistemas embarcados sensíveis à temperatura.
+Essa categorização tem como objetivo simular o comportamento de um sistema embarcado que não apenas coleta dados, mas também realiza uma **análise embarcada**, classificando os dados com base em faixas de operação seguras ou críticas. Essa estratégia permite que o dispositivo reaja localmente ou envie alertas para a nuvem em casos de falha iminente, antecipando paradas e aumentando a confiabilidade do processo industrial.
 
-### 📈 Estatísticas das Temperaturas por Status
-
-| Status             | Temperatura Média (°C) | Desvio Padrão (°C) |
-|--------------------|------------------------|---------------------|
-| NORMAL             | 6.54                   | 1.20                |
-| ALERTA_Pre_falha   | 10.44                  | 0.84                |
-| FALHA_CRITICA      | 13.52                  | 0.85                |
+Os gráficos apresentados anteriormente, também fornecem uma visão clara da transição entre os diferentes estados, evidenciando o momento em que o sistema passa de uma operação estável para condições críticas.
 
 ---
 
 # 🔍 Entidades e Atributos
-
 ![Fluxograma de Entidades e Atributos](img/entidades-atributos.jpg)
 
 ## MAQUINAS
@@ -295,28 +346,79 @@ Essa análise demonstra que o sistema de simulação e classificação está fun
 
 - id_sensor
 - id_maquina
-- tipologia (temperatura, pressao, vibracao)
+- tipologia (temperatura, vibracao, nivel_enchimento)
 
-## MEDICAO
+## MEDICAO VIBRACAO
 
-- id_medicao
+- id_vibracao
 - id_sensor
-- medicao (resultado da medição dos sensores)
-- data_medicao (quando foi feito a medição)
+- medicao (resultado da medição do sensor)
+- status (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
 
-## CLASSIFICACAO
+## MEDICAO TEMPERATURA
 
-- id_classe
-- id_medicao
-- classificacao (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
+- id_temp
+- id_sensor
+- medicao (resultado da medição do sensor)
+- status (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
+
+## MEDICAO NIVEL DE ENCHIMENTO
+
+- id_nivel
+- id_sensor
+- medicao (resultado da medição do sensor)
+- status (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
 
 # 🔗 Relacionamentos (Cardinalidades)
 
 | Entidade 1 | Relacionamento | Entidade 2    | Cardinalidade | Observação                                            |
 |------------|----------------|---------------|---------------|-------------------------------------------------------|
-| Maquinas   | possui         | Sensores      | 1:1           | Uma máquina pode medir apenas um sensor               |
-| Sensores   | faz            | Medicao       | 1:N           | Um equipamento de sensores pode fazer várias medições |
-| Medicao    | resulta        | Classificacao | 1:1           | Uma medição pode resultar em apenas uma classificação |
+| Maquinas   | possui         | Sensores      | 1:N           | Uma máquina pode possuir vários sensores               |
+| Sensores   | faz            | Medicao Vibração      | 1:N           | Um sensor podem fazer várias medições de vibração|
+| Sensores   | faz            | Medicao Temperatura      | 1:N           | Um sensor podem fazer várias medições de temperatura|
+| Sensores   | faz            | Medicao Nível de enchimento    | 1:N           | Um sensor podem fazer várias medições de nível|
+
+---
+
+# 🗝️ Modelagem de dados
+![Modelagem de dados](img/modelagem.JPG)
+
+# 📊 Banco de dados
+
+
+---
+
+# 📜 Etapas
+
+## 1. Cadastro de máquinas
+Há necessidade de cadastrar todas as máquinas da indústria.
+
+📊 **Dados Necessários**
+- Nome da máquina
+- Localização da máquina dentro da indústria
+
+## 2. Identificação dos sensores
+Há necessidade de identificação de todos os sensores presentes nas máquinas.
+
+📊 **Dados Necessários**
+- Tipologia
+- Máquina localizada
+
+## 3. Recebimento de dados de sensores
+O sistema deverá receber os dados de cada sensor.
+
+📊 **Dados Recebidos**
+- Medição
+- Status
+
+## 4. Banco de dados
+A partir das informações recebidas e registradas, deverão ser armazenadas em um banco de dados. 
+
+> Os relacionamentos entre as entidades irão proporcionar insights valiosos que poderão ser detectados pelo modelo preditivo
+
+---
+
+# 🖥️ Machine Learning
 
 
 ## 📁 Estrutura do Repositório
@@ -345,10 +447,6 @@ Essa análise demonstra que o sistema de simulação e classificação está fun
 ---
 
 ## 🧠 Conclusão
-
-A simulação do sensor DHT22 no Wokwi demonstrou a viabilidade de todo o fluxo de aquisição e classificação de dados no ESP32. Foi implementada a geração de dados simulados com base no tempo de execução, seguida de uma lógica embarcada para categorização automática dos valores de temperatura em três estados operacionais: **NORMAL**, **ALERTA_Pre_falha** e **FALHA_CRITICA**.
-
-Os dados foram exportados para análise em Python, com geração de gráfico e cálculo de média e desvio padrão por categoria. O experimento evidenciou a integração entre hardware embarcado e ferramentas de análise, validando o modelo de monitoramento e detecção de anomalias.
 
 ---
 
