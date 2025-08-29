@@ -340,7 +340,7 @@ Os gráficos apresentados anteriormente, também fornecem uma visão clara da tr
 
 - id_maquina
 - nome (maquina_1, maquina_2, maquina_3)
-- localizacao (sala_1, sala_2)
+- localizacao (area_1, area_2)
 
 ## SENSORES
 
@@ -350,21 +350,21 @@ Os gráficos apresentados anteriormente, também fornecem uma visão clara da tr
 
 ## MEDICAO VIBRACAO
 
-- id_vibracao
+- id
 - id_sensor
 - medicao (resultado da medição do sensor)
 - status (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
 
 ## MEDICAO TEMPERATURA
 
-- id_temp
+- id
 - id_sensor
 - medicao (resultado da medição do sensor)
 - status (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
 
 ## MEDICAO NIVEL DE ENCHIMENTO
 
-- id_nivel
+- id
 - id_sensor
 - medicao (resultado da medição do sensor)
 - status (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
@@ -383,8 +383,53 @@ Os gráficos apresentados anteriormente, também fornecem uma visão clara da tr
 # 🗝️ Modelagem de dados
 ![Modelagem de dados](img/modelagem.JPG)
 
+> Para a modelagem dos dados foi utilizado o site dbdiagram.io
+
+```cpp
+// Trecho representativo da criação da modelagem de dados
+
+TABLE MEDICAO_VIBRACAO { // Criação da tabela definindo as colunas e suas características e restrições
+  id INT [primary key]
+  id_sensor INT
+  aceleracao_total FLOAT
+  status VARCHAR(20)
+  }
+
+Ref: "SENSORES"."id_sensor" < "MEDICAO_VIBRACAO"."id_sensor" // Referenciando a chave estrangeira com outra coluna
+
+```
+
+![Código para Modelagem de dados](img/codigo_modelagem.JPG)
+
+---
+
 # 📊 Banco de dados
 
+```cpp
+// Trecho representativo da criação do banco de dados
+// Primeiro importar o arquivo .csv gerado pela medição sensor correspondente
+
+ALTER TABLE medicao_vibracao ADD COLUMN id_sensor; // adicionar a coluna id_sensor
+
+UPDATE medicao_vibracao SET id_sensor = 3; // informar que o sensor tem o id '3' da tabela SENSORES
+
+ALTER TABLE medicao_vibracao RENAME TO medicao_vibracao_old; // Alterar o nome da tabela para criar uma nova com a chave estrangeira id_sensor
+
+CREATE TABLE MEDICAO_VIBRACAO ( //Criação da nova tabela
+  id INT PRIMARY KEY,
+  id_sensor INT,
+  aceleracao_total FLOAT,
+  status VARCHAR(20),
+  FOREIGN KEY (id_sensor) REFERENCES SENSORES(id_sensor)
+  );
+ 
+ INSERT INTO MEDICAO_VIBRACAO (id, id_sensor, aceleracao_total, status) //Adição dos dados contidos na tabela anterior
+ SELECT ID, id_sensor, Aceleracao_Total, Status
+ FROM medicao_vibracao_old;
+ 
+ DROP TABLE medicao_vibracao_old; // Deletar tabela antiga
+  
+```
 
 ---
 
@@ -414,7 +459,7 @@ O sistema deverá receber os dados de cada sensor.
 ## 4. Banco de dados
 A partir das informações recebidas e registradas, deverão ser armazenadas em um banco de dados. 
 
-> Os relacionamentos entre as entidades irão proporcionar insights valiosos que poderão ser detectados pelo modelo preditivo
+> Os relacionamentos entre as entidades irão proporcionar insights valiosos que poderão ser detectados pelo modelo preditivo.
 
 ---
 
