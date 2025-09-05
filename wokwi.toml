@@ -1,0 +1,3 @@
+[wokwi]
+version = 1
+firmware = ".pio/build/sensor_vibracao_mpu6050/firmware.elf"

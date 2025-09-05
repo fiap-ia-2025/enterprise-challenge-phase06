@@ -9,13 +9,13 @@
 ---
 
 # 📦 Enterprise Challenge - Sprint 3
-<!-- Título do projeto: curto, claro, direto. Pode destacar o problema e a tecnologia principal -->
+
 
 ## 👥 Grupo 26
-<!-- Nome oficial do grupo, se houver. Pode usar um nome criativo também -->
+
 
 ## 👨‍🎓 Integrantes:
-- Amanda Vieira Pires (RM565045)
+- Amanda Vieira Pires (RM5666330)
 - Ana Gabriela Soares Santos (RM565235)
 - Bianca Nascimento de Santa Cruz Oliveira (RM561390)
 - Milena Pereira dos Santos Silva (RM565464)
@@ -32,9 +32,8 @@
 # 📜 Descrição do Projeto
 ## 🚀 Introdução
 
-Dando continuidade ao projeto de **manutenção preditiva em linhas de envase**, esta fase avança da simulação de sensores para a estruturação e análise de dados. Transformamos os dados coletados em um banco de dados relacional robusto e, a partir dele, desenvolvemos um modelo de Machine Learning para extrair insights valiosos. Esta etapa representa um ciclo completo de uma solução de digitalização industrial, conectando a coleta de dados, o armazenamento estruturado e a aplicação de inteligência preditiva. 
+Dando continuidade ao projeto de manutenção preditiva em linhas de envase, esta fase avança da simulação de sensores para a estruturação e análise de dados. Transformamos os dados coletados em um banco de dados relacional robusto e, a partir dele, desenvolvemos um modelo de Machine Learning para extrair insights valiosos. Esta etapa representa um ciclo completo de uma solução de digitalização industrial, conectando a coleta de dados, o armazenamento estruturado e a aplicação de inteligência preditiva.
 
-<!-- Após a construção de um circuito simulado com ESP32 e sensor DHT22 no ambiente Wokwi, representando um cenário em que, variações de temperatura poderiam sinalizar diferentes estados operacionais da linha de produção — de operação normal até falhas críticas. Os dados foram classificados localmente e exportados para posterior visualização e análise gráfica, reforçando a importância do monitoramento em tempo real para a detecção precoce de anomalias.-->
 
 Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challenge-phase03
 
@@ -51,74 +50,103 @@ Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challe
 
 ---
 
-## 🔧 Arquitetura da Solução
+## 🔧 Pipeline de Solução e Execução
 
-O projeto foi estruturado como um pipeline de dados integrado, garantindo um fluxo contínuo desde a coleta até a análise preditiva:
+O projeto foi estruturado como um pipeline de dados semi-automatizado, garantindo um fluxo de trabalho eficiente desde a simulação até a análise preditiva.
 
-- **Simulação de Sensores (Wokwi):** Circuitos com ESP32 e sensores (DS18B20, MPU6050, HC-SR04) geram dados brutos.
-- **Exportação de Dados (CSV):** As leituras simuladas são salvas em arquivos `.csv`.
-- **Banco de Dados (SQLite):** Um script Python (`import_data.py`) utiliza um esquema (`schema.sql`) para criar um banco de dados SQLite e importar os dados dos CSVs de forma automatizada.
+- **Simulação de Sensores (Wokwi + PlatformIO):** O projeto utiliza múltiplos ambientes no PlatformIO, um para cada sensor (DS18B20, MPU6050, HC-SR04). Ao selecionar e compilar um ambiente, um script de pré-compilação (`update_diagram.py`) atualiza automaticamente o arquivo `diagram.json`, garantindo que o Wokwi sempre carregue o circuito correto para a simulação.
+- **Coleta de Dados (Manual):** Os dados gerados no monitor serial do Wokwi são coletados e salvos nos respectivos arquivos `.csv` NA PASTA `data/`.
+- **Estruturação de Dados (SQLite):** Um script Python (`import_data.py`) lê os arquivos `.csv`, cria um banco de dados SQLite com base em um esquema pré-definido (`schema.sql`) e popula as tabelas.
 - **Machine Learning (Jupyter Notebook):** O notebook (`machine_learning.ipynb`) conecta-se ao banco de dados para treinar, testar e avaliar um modelo de classificação com `Scikit-learn`.
 
 ---
 
 ## 🚀 Como Executar o Projeto
 
-Siga os passos abaixo para configurar e executar o projeto completo, desde a criação do banco de dados até o treinamento do modelo de Machine Learning.
-
 ### 📋 Pré-requisitos
 
-Antes de começar, garanta que você tenha os seguintes softwares instalados:
-- [Git](https://git-scm.com/)
-- [Python 3.8+](https://www.python.org/downloads/)
-- [Visual Studio Code](https://code.visualstudio.com/)
-- A extensão [Jupyter](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter) para o VS Code.
+- Python 3.8+
+- Visual Studio Code com as extensões:
+  - PlatformIO IDE: Essencial para compilar e simular o código do ESP32.
+  - Jupyter: Para executar os notebooks de análise.
+  - SQLite Viewer: (Opcional) Para inspecionar o banco de dados.
+
+
 
 ### Passo a Passo
 
-1.  **Clone o Repositório**
+## 🔹 Fase 1: Geração de Dados Simulados (Wokwi)
 
-    Abra um terminal e clone o repositório do projeto para a sua máquina local:
-    ```bash
-    git clone [https://github.com/fiap-ia-2025/enterprise-challenge-phase04.git](https://github.com/fiap-ia-2025/enterprise-challenge-phase04.git)
-    cd enterprise-challenge-phase04
-    ```
-
-2.  **Instale as Dependências**
-
-    Instale as bibliotecas Python necessárias para a análise de dados e machine learning executando o seguinte comando no seu terminal:
-    ```bash
-    pip install pandas scikit-learn matplotlib seaborn
-    ```
-
-3.  **Crie e Povoe o Banco de Dados**
-
-    Execute o script `import_data.py` para criar o banco de dados SQLite (`hermes_db.sqlite`) e carregar todos os dados dos arquivos `.csv` automaticamente.
-
-    ```bash
-    python import_data.py
-    ```
-    Ao final da execução, você verá a mensagem: `Banco de dados 'hermes_db.sqlite' criado e populado com sucesso!` e o arquivo aparecerá na raiz do projeto.
-
-4.  **Execute a Análise de Machine Learning no VS Code**
-
-    Abra a pasta do projeto no Visual Studio Code. Em seguida, abra o arquivo `machine_learning.ipynb`.
-    
-    No canto superior do notebook, clique no botão **"Executar Tudo" (Run All)**.
-    
-    Isso executará todas as células em sequência, realizando a carga dos dados do banco, o treinamento do modelo e a geração da matriz de confusão no final do arquivo.
+Existem duas maneiras de gerar os dados. Escolha a que melhor se adapta à sua necessidade.
 
 ---
 
+### ⚡ Fluxo 1: Método Simples (Sensor por Sensor)
+
+Ideal para quando você está focado em apenas **um sensor** ou para um **primeiro contato** com o projeto.  
+(Envolve recompilar a cada troca de sensor.)
+
+1. **Selecione o Ambiente**  
+   - Na barra de status azul do VS Code (canto inferior), escolha o sensor desejado.  
+   - Exemplo: `env:sensor_nivel_hcsr04`.
+
+2. **Compile o Ambiente (Build)**  
+   - Clique no ícone de **✓ (check)** na barra de ferramentas do PlatformIO.  
+   - O script `update_diagram.py` atualizará o `diagram.json` automaticamente.
+
+3. **Ajuste o Firmware no `wokwi.toml`**  
+   - Edite a linha `firmware` para apontar para o `.elf` do ambiente compilado:  
+
+     ```toml
+     firmware = ".pio/build/sensor_nivel_hcsr04/firmware.elf"
+     ```
+
+4. **Inicie a Simulação**  
+   - Execute: **F1 > Wokwi: Start Simulator**.  
+   - Colete os dados no Serial Monitor.
+
+---
+
+### ⚡ Fluxo 2: Método Avançado (Compilar Tudo de Uma Vez)
+
+Recomendado para **desenvolvimento e testes**, quando há necessidade de alternar entre sensores com frequência.  
+(A troca é quase instantânea.)
+
+#### Etapa Única de Compilação
+No terminal do PlatformIO, execute o comando `platformio run`. Isso compilará todos os ambientes de uma vez, criando os três arquivos `firmware.elf` em suas respectivas pastas dentro de `.pio/build/`.
+
+#### Ciclo Rápido de Simulação (para cada troca de sensor):
+  1. Sincronize o Diagrama do Circuito: Copie o conteúdo do arquivo JSON do sensor desejado (ex: `.json/diagram_HC-SR04.json`) e cole no arquivo `diagram.json` da raiz do projeto.
+
+  2. Ajuste o Firmware no `wokwi.toml`: Aponte a linha firmware para o `.elf` do sensor escolhido, como no Fluxo 1.
+
+  3. Inicie a Simulação e colete os dados. Para trocar de sensor, basta repetir estes dois passos manuais.
+
+
+
+
+## 🔹 Fase 2: Estruturação dos Dados
+
+  1. Instale as dependências Python:
+  ```bash
+    pip install pandas scikit-learn matplotlib seaborn
+  ```
+
+  2. Execute o script de importação para criar e popular o banco de dados `hermes_db.sqlite`:
+  ```bash
+    python scripts/import_data.py
+  ```
+
+## 🔹 Fase 3: Análise com Machine Learning
+
+  1. Abra o arquivo notebooks/machine_learning.ipynb.
+  2. Clique em "Executar Tudo" (Run All). O notebook irá treinar o modelo e exibir a Matriz de Confusão com os resultados.
+
+
+
 ## 📌 Justificativa da Escolha do Sensor
 
-O sensor **DS18B20** foi escolhido para este projeto, pois oferece leitura precisa de **temperatura** das máquinas e não requer calibração externa, isso garante leituras confiáveis para o monitoramento de processos de envase na indústria. <br> 
-
-Já o sensor **MPU6050**, utilizado para medir a vibração da máquina, realiza a medição de aceleramento nos três eixos X, Y e Z, detectando a intensidade e frequência das vibrações. <br> 
-
-Por último, o sensor **HC-SR04** para fazer a medição do nível de enchimento sem fazer contato com o produto. Ele fica posicionado acima do recipiente, emite uma onda sonora e realiza a medição do tempo que o eco leva para retornar, e assim calcula-se a distância até a superfície do líquido. <br>
-
-Nesse contexto de linhas de envase de cervejas e refrigerantes, os sensores citados acima, permitem simular as possíveis falhas durante o processo. As indústrias de bebidas enfrentam desafios frequentemente, que podem estar associados a pequenas variações na temperatura, vibração ou quantidade de líquido inserido nos produtos, que ao passar despercebidas por sistemas de monitoramentos tradicionais, podem causar interrupções significativas. Ao utilizar os sensores podemos recriar e analizar cenários onde essas condições impactam diretamente na linha de produção, para então desenvolver e testar soluções de predição e automação, capazes de identificar as anomalias e evitar falhas críticas, otimizando as operações nas linhas de envase de cervejas e refrigerantes.
+O sensor **DS18B20** foi escolhido para a leitura precisa de temperatura, o **MPU6050** para medir a vibração da máquina através de seu acelerômetro, e o **HC-SR04** para a medição do nível de enchimento sem contato com o produto. Em conjunto, esses sensores permitem simular um cenário realista de monitoramento em linhas de envase de bebidas, onde variações nessas três grandezas são indicadores críticos de possíveis falhas no processo.
 
 ---
 
@@ -503,35 +531,36 @@ O objetivo do modelo de Machine Learning é classificar o status de operação c
 /enterprise-challenge-phase04
 /
 ├── .sql/
-│   └── schema.sql              # Script DDL para criação da estrutura do banco de dados
+│   └── schema.sql                  # Script DDL para criação da estrutura do banco
 │
 ├── data/
-│   ├── medicao_nivel.csv       # Dados simulados do sensor de nível
-│   ├── medicao_temperatura.csv # Dados simulados do sensor de temperatura
-│   └── medicao_vibracao.csv    # Dados simulados do sensor de vibração
+│   ├── medicao_nivel.csv           # Dados simulados do sensor de nível
+│   ├── medicao_temperatura.csv     # Dados simulados do sensor de temperatura
+│   └── medicao_vibracao.csv        # Dados simulados do sensor de vibração
 │
-├── img/                        # Imagens e diagramas utilizados no README
-│   ├── modelagem.JPG           # Diagrama Entidade-Relacionamento do banco de dados
-│   ├── matriz_confusao.png     # Resultado visual do modelo de Machine Learning
-│   └── ...                     # Outras imagens e prints
+├── .json/
+│   ├── diagram_DS18B20.json        # Diagrama de circuito para o Wokwi
+│   ├── diagram_HC-SR04.json        # "
+│   └── diagram_MPU6050.json        # "
 │
 ├── notebooks/
-│   ├── grafico.ipynb           # Notebook para geração dos gráficos iniciais
-│   └── machine_learning.ipynb  # Notebook com o treinamento e avaliação do modelo
+│   ├── grafico.ipynb               # (Opcional) Notebook para geração de gráficos avulsos
+│   └── machine_learning.ipynb      # Notebook principal com o treino e avaliação do modelo
 │
-├── .ino/                       # Códigos-fonte (.ino) da simulação dos sensores no Wokwi
-│   ├── sketch_DS18B20.ino
-│   ├── sketch_HC-SR04.ino
-│   └── sketch_MPU6050.ino
+├── scripts/
+│   ├── update_diagram.py           # Script para atualizar o diagrama do Wokwi automaticamente
+|   └── import_data.py              # Script para popular banco de dados com dados de medição
 │
-├── .json/                      # Arquivos de diagrama (.json) da simulação no Wokwi
-│   ├── diagram_DS18B20.json
-│   ├── diagram_HC-SR04.json
-│   └── diagram_MPU6050.json
+├── src/
+│   ├── ds18b20_main.cpp            # Código-fonte da simulação para o sensor de temperatura
+│   ├── hcsr04_main.cpp             # Código-fonte da simulação para o sensor de nível
+│   └── mpu6050_main.cpp            # Código-fonte da simulação para o sensor de vibração
 │
-├── .gitignore                  # Arquivos e pastas ignorados pelo Git
-├── import_data.py              # Script Python para criar o DB e importar os dados CSV
-└── README.md                   # Documentação do projeto
+├── .gitignore                      # Arquivos ignorados pelo Git
+├── diagram.json                    # Arquivo de diagrama ATUAL do Wokwi (gerado via script)
+├── platformio.ini                  # Configuração do PlatformIO com múltiplos ambientes
+├── README.md                       # Esta documentação
+└── wokwi.toml                      # Configuração do Wokwi para carregar o firmware
 ```
 ---
 
