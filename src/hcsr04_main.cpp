@@ -1,3 +1,4 @@
+#include <Arduino.h>
 // Pinos do HC-SR04
 #define TRIG_PIN 13
 #define ECHO_PIN 12

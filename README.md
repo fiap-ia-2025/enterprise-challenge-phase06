@@ -9,13 +9,13 @@
 ---
 
 # 📦 Enterprise Challenge - Sprint 3
-<!-- Título do projeto: curto, claro, direto. Pode destacar o problema e a tecnologia principal -->
+
 
 ## 👥 Grupo 26
-<!-- Nome oficial do grupo, se houver. Pode usar um nome criativo também -->
+
 
 ## 👨‍🎓 Integrantes:
-- Amanda Vieira Pires (RM565045)
+- Amanda Vieira Pires (RM5666330)
 - Ana Gabriela Soares Santos (RM565235)
 - Bianca Nascimento de Santa Cruz Oliveira (RM561390)
 - Milena Pereira dos Santos Silva (RM565464)
@@ -32,9 +32,8 @@
 # 📜 Descrição do Projeto
 ## 🚀 Introdução
 
-Dando continuidade ao projeto voltado à **manutenção preditiva em linhas de envase da indústria de bebidas**, após a segunda etapa que teve como foco a simulação de um sistema embarcado responsável pela aquisição local de dados sensoriais, inicia-se a terceira etapa. Nesta etapa, os dados captados pelos sensores serão armazenados de forma estruturada para que um algoritmo de Machine Learning busque insights valiosos para a indústria.  
+Dando continuidade ao projeto de manutenção preditiva em linhas de envase, esta fase avança da simulação de sensores para a estruturação e análise de dados. Transformamos os dados coletados em um banco de dados relacional robusto e, a partir dele, desenvolvemos um modelo de Machine Learning para extrair insights valiosos. Esta etapa representa um ciclo completo de uma solução de digitalização industrial, conectando a coleta de dados, o armazenamento estruturado e a aplicação de inteligência preditiva.
 
-<!-- Após a construção de um circuito simulado com ESP32 e sensor DHT22 no ambiente Wokwi, representando um cenário em que, variações de temperatura poderiam sinalizar diferentes estados operacionais da linha de produção — de operação normal até falhas críticas. Os dados foram classificados localmente e exportados para posterior visualização e análise gráfica, reforçando a importância do monitoramento em tempo real para a detecção precoce de anomalias.-->
 
 Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challenge-phase03
 
@@ -42,39 +41,112 @@ Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challe
 
 ## 🎯 Objetivo
 
-- Criar três circuitos virtuais com ESP32 e sensores no Wokwi;
-- Simular variações de temperatura, vibração e nível de enchimento conforme diferentes momentos de operação;
-- Classificar os valores em três categorias: `NORMAL`, `ALERTA_Pre_falha` e `FALHA_CRITICA`;
-- Registrar os dados via Monitor Serial;
-- Exportar os dados simulados para CSV;
-- Gerar uma modelagem de dados relacional;
-- Criar um banco de dados;
-- Treinar um algoritmos de machine learning para obter insights;
-- Documentar todo o processo no GitHub com prints, código e análise.
+- **Modelar um banco de dados relacional** funcional e normalizado para os dados dos sensores.
+- **Criar um script SQL (`schema.sql`)** para definir a estrutura do banco.
+- **Desenvolver um script Python (`import_data.py`)** para automatizar a criação e o povoamento do banco de dados a partir dos arquivos CSV.
+- **Treinar um algoritmo de Machine Learning** para classificar o status operacional (`NORMAL`, `ALERTA_Pre_falha`, `FALHA_CRITICA`).
+- **Gerar e justificar visualizações** que demonstrem a performance do modelo.
+- **Documentar todo o processo** no GitHub, garantindo clareza e reprodutibilidade.
 
 ---
 
-## 🔧 Estrutura de Simulação
+## 🔧 Pipeline de Solução e Execução
 
-- **Plataforma de Simulação:** Wokwi
-- **Microcontrolador:** ESP32 (simulado)
-- **Linguagem:** C++ (com base na plataforma PlataformIO com VS Code)
-- **Sensor Utilizado:**  
-  - `DS18B20`: sensor de temperatura digital
-  - `MPU6050`: acelerômetro e giroscópio
-  - `HC-SR04`: sensor de distância ultrassônico
+O projeto foi estruturado como um pipeline de dados semi-automatizado, garantindo um fluxo de trabalho eficiente desde a simulação até a análise preditiva.
+
+- **Simulação de Sensores (Wokwi + PlatformIO):** O projeto utiliza múltiplos ambientes no PlatformIO, um para cada sensor (DS18B20, MPU6050, HC-SR04). Ao selecionar e compilar um ambiente, um script de pré-compilação (`update_diagram.py`) atualiza automaticamente o arquivo `diagram.json`, garantindo que o Wokwi sempre carregue o circuito correto para a simulação.
+- **Coleta de Dados (Manual):** Os dados gerados no monitor serial do Wokwi são coletados e salvos nos respectivos arquivos `.csv` NA PASTA `data/`.
+- **Estruturação de Dados (SQLite):** Um script Python (`import_data.py`) lê os arquivos `.csv`, cria um banco de dados SQLite com base em um esquema pré-definido (`schema.sql`) e popula as tabelas.
+- **Machine Learning (Jupyter Notebook):** O notebook (`machine_learning.ipynb`) conecta-se ao banco de dados para treinar, testar e avaliar um modelo de classificação com `Scikit-learn`.
 
 ---
+
+## 🚀 Como Executar o Projeto
+
+### 📋 Pré-requisitos
+
+- Python 3.8+
+- Visual Studio Code com as extensões:
+  - PlatformIO IDE: Essencial para compilar e simular o código do ESP32.
+  - Jupyter: Para executar os notebooks de análise.
+  - SQLite Viewer: (Opcional) Para inspecionar o banco de dados.
+
+
+
+### Passo a Passo
+
+## 🔹 Fase 1: Geração de Dados Simulados (Wokwi)
+
+Existem duas maneiras de gerar os dados. Escolha a que melhor se adapta à sua necessidade.
+
+---
+
+### ⚡ Fluxo 1: Método Simples (Sensor por Sensor)
+
+Ideal para quando você está focado em apenas **um sensor** ou para um **primeiro contato** com o projeto.  
+(Envolve recompilar a cada troca de sensor.)
+
+1. **Selecione o Ambiente**  
+   - Na barra de status azul do VS Code (canto inferior), escolha o sensor desejado.  
+   - Exemplo: `env:sensor_nivel_hcsr04`.
+
+2. **Compile o Ambiente (Build)**  
+   - Clique no ícone de **✓ (check)** na barra de ferramentas do PlatformIO.  
+   - O script `update_diagram.py` atualizará o `diagram.json` automaticamente.
+
+3. **Ajuste o Firmware no `wokwi.toml`**  
+   - Edite a linha `firmware` para apontar para o `.elf` do ambiente compilado:  
+
+     ```toml
+     firmware = ".pio/build/sensor_nivel_hcsr04/firmware.elf"
+     ```
+
+4. **Inicie a Simulação**  
+   - Execute: **F1 > Wokwi: Start Simulator**.  
+   - Colete os dados no Serial Monitor.
+
+---
+
+### ⚡ Fluxo 2: Método Avançado (Compilar Tudo de Uma Vez)
+
+Recomendado para **desenvolvimento e testes**, quando há necessidade de alternar entre sensores com frequência.  
+(A troca é quase instantânea.)
+
+#### Etapa Única de Compilação
+No terminal do PlatformIO, execute o comando `platformio run`. Isso compilará todos os ambientes de uma vez, criando os três arquivos `firmware.elf` em suas respectivas pastas dentro de `.pio/build/`.
+
+#### Ciclo Rápido de Simulação (para cada troca de sensor):
+  1. Sincronize o Diagrama do Circuito: Copie o conteúdo do arquivo JSON do sensor desejado (ex: `.json/diagram_HC-SR04.json`) e cole no arquivo `diagram.json` da raiz do projeto.
+
+  2. Ajuste o Firmware no `wokwi.toml`: Aponte a linha firmware para o `.elf` do sensor escolhido, como no Fluxo 1.
+
+  3. Inicie a Simulação e colete os dados. Para trocar de sensor, basta repetir estes dois passos manuais.
+
+
+
+
+## 🔹 Fase 2: Estruturação dos Dados
+
+  1. Instale as dependências Python:
+  ```bash
+    pip install pandas scikit-learn matplotlib seaborn
+  ```
+
+  2. Execute o script de importação para criar e popular o banco de dados `hermes_db.sqlite`:
+  ```bash
+    python scripts/import_data.py
+  ```
+
+## 🔹 Fase 3: Análise com Machine Learning
+
+  1. Abra o arquivo notebooks/machine_learning.ipynb.
+  2. Clique em "Executar Tudo" (Run All). O notebook irá treinar o modelo e exibir a Matriz de Confusão com os resultados.
+
+
 
 ## 📌 Justificativa da Escolha do Sensor
 
-O sensor **DS18B20** foi escolhido para este projeto, pois oferece leitura precisa de **temperatura** das máquinas e não requer calibração externa, isso garante leituras confiáveis para o monitoramento de processos de envase na indústria. <br> 
-
-Já o sensor **MPU6050**, utilizado para medir a vibração da máquina, realiza a medição de aceleramento nos três eixos X, Y e Z, detectando a intensidade e frequência das vibrações. <br> 
-
-Por último, o sensor **HC-SR04** para fazer a medição do nível de enchimento sem fazer contato com o produto. Ele fica posicionado acima do recipiente, emite uma onda sonora e realiza a medição do tempo que o eco leva para retornar, e assim calcula-se a distância até a superfície do líquido. <br>
-
-Nesse contexto de linhas de envase de cervejas e refrigerantes, os sensores citados acima, permitem simular as possíveis falhas durante o processo. As indústrias de bebidas enfrentam desafios frequentemente, que podem estar associados a pequenas variações na temperatura, vibração ou quantidade de líquido inserido nos produtos, que ao passar despercebidas por sistemas de monitoramentos tradicionais, podem causar interrupções significativas. Ao utilizar os sensores podemos recriar e analizar cenários onde essas condições impactam diretamente na linha de produção, para então desenvolver e testar soluções de predição e automação, capazes de identificar as anomalias e evitar falhas críticas, otimizando as operações nas linhas de envase de cervejas e refrigerantes.
+O sensor **DS18B20** foi escolhido para a leitura precisa de temperatura, o **MPU6050** para medir a vibração da máquina através de seu acelerômetro, e o **HC-SR04** para a medição do nível de enchimento sem contato com o produto. Em conjunto, esses sensores permitem simular um cenário realista de monitoramento em linhas de envase de bebidas, onde variações nessas três grandezas são indicadores críticos de possíveis falhas no processo.
 
 ---
 
@@ -333,103 +405,56 @@ Os gráficos apresentados anteriormente, também fornecem uma visão clara da tr
 
 ---
 
-# 🔍 Entidades e Atributos
-![Fluxograma de Entidades e Atributos](img/entidades-atributos.jpg)
+## 📊 Banco de Dados
 
-## MAQUINAS
+Para armazenar os dados de forma estruturada, foi projetado um banco de dados relacional simples e eficiente, implementado em SQLite. Esta abordagem garante a integridade e facilita as consultas complexas necessárias para a análise de Machine Learning.
 
-- id_maquina
-- nome (maquina_1, maquina_2, maquina_3)
-- localizacao (area_1, area_2)
+### Diagrama Entidade-Relacionamento (DER)
+O diagrama abaixo ilustra a modelagem, com suas entidades, atributos e relacionamentos.
 
-## SENSORES
-
-- id_sensor
-- id_maquina
-- tipologia (temperatura, vibracao, nivel_enchimento)
-
-## MEDICAO VIBRACAO
-
-- id
-- id_sensor
-- medicao (resultado da medição do sensor)
-- status (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
-
-## MEDICAO TEMPERATURA
-
-- id
-- id_sensor
-- medicao (resultado da medição do sensor)
-- status (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
-
-## MEDICAO NIVEL DE ENCHIMENTO
-
-- id
-- id_sensor
-- medicao (resultado da medição do sensor)
-- status (NORMAL, ALERTA_Pre_falha, FALHA_CRITICA)
-
-# 🔗 Relacionamentos (Cardinalidades)
-
-| Entidade 1 | Relacionamento | Entidade 2    | Cardinalidade | Observação                                            |
-|------------|----------------|---------------|---------------|-------------------------------------------------------|
-| Maquinas   | possui         | Sensores      | 1:N           | Uma máquina pode possuir vários sensores               |
-| Sensores   | faz            | Medicao Vibração      | 1:N           | Um sensor podem fazer várias medições de vibração|
-| Sensores   | faz            | Medicao Temperatura      | 1:N           | Um sensor podem fazer várias medições de temperatura|
-| Sensores   | faz            | Medicao Nível de enchimento    | 1:N           | Um sensor podem fazer várias medições de nível|
-
----
-
-# 🗝️ Modelagem de dados
 ![Modelagem de dados](img/modelagem.JPG)
 
-> Para a modelagem dos dados foi utilizado o site dbdiagram.io
+### Descrição das Entidades e Relacionamentos
 
-```cpp
-// Trecho representativo da criação da modelagem de dados
+A modelagem de dados foi estruturada para refletir o ambiente industrial de forma clara e normalizada:
 
-TABLE MEDICAO_VIBRACAO { // Criação da tabela definindo as colunas e suas características e restrições
-  id INT [primary key]
-  id_sensor INT
-  aceleracao_total FLOAT
-  status VARCHAR(20)
-  }
+* **MAQUINAS:** Entidade central que representa os equipamentos físicos na linha de produção.
+    * `id_maquina`: Chave primária para identificação única.
+    * `nome`, `localizacao`: Atributos que descrevem a máquina.
 
-Ref: "SENSORES"."id_sensor" < "MEDICAO_VIBRACAO"."id_sensor" // Referenciando a chave estrangeira com outra coluna
+* **SENSORES:** Representa os dispositivos de coleta de dados instalados nas máquinas.
+    * `id_sensor`: Chave primária.
+    * `id_maquina`: Chave estrangeira que estabelece o relacionamento **(1:N)** com a tabela `MAQUINAS`, indicando que **uma máquina pode ter vários sensores**.
+    * `tipologia`: Descreve o tipo de dado que o sensor coleta (temperatura, vibração, etc.).
 
-```
+* **MEDICAO_VIBRACAO / TEMPERATURA / NIVEL:** Tabelas que armazenam os dados históricos de cada sensor.
+    * `id`: Chave primária para cada registro de medição.
+    * `id_sensor`: Chave estrangeira que estabelece o relacionamento **(1:N)** com a tabela `SENSORES`, indicando que **um sensor pode realizar múltiplas medições** ao longo do tempo.
+    * `aceleracao_total`, `medicao`, `nivel_cm`: Atributos que guardam o valor numérico da leitura.
+    * `status`: Campo que armazena a classificação da medição, fundamental para o treinamento do modelo de ML.
 
-![Código para Modelagem de dados](img/codigo_modelagem.JPG)
+### Automação da Criação e Povoamento
 
----
+Para garantir a consistência e reprodutibilidade do projeto, todo o processo de criação e povoamento do banco foi automatizado:
 
-# 📊 Banco de dados
+1.  **`schema.sql`:** Um único script contém todo o código DDL (Data Definition Language) para criar as tabelas e definir os relacionamentos (`FOREIGN KEY`), garantindo a integridade referencial.
+2.  **`import_data.py`:** Este script Python utiliza a biblioteca `sqlite3` e `pandas` para:
+    * Criar o banco `hermes_db.sqlite` executando o `schema.sql`.
+    * Inserir os dados estáticos das máquinas e tipos de sensores.
+    * Ler os arquivos `medicao_*.csv`, processá-los e inseri-los nas tabelas de medição correspondentes.
 
-```cpp
-// Trecho representativo da criação do banco de dados
-// Primeiro importar o arquivo .csv gerado pela medição sensor correspondente
-
-ALTER TABLE medicao_vibracao ADD COLUMN id_sensor; // adicionar a coluna id_sensor
-
-UPDATE medicao_vibracao SET id_sensor = 3; // informar que o sensor tem o id '3' da tabela SENSORES
-
-ALTER TABLE medicao_vibracao RENAME TO medicao_vibracao_old; // Alterar o nome da tabela para criar uma nova com a chave estrangeira id_sensor
-
-CREATE TABLE MEDICAO_VIBRACAO ( //Criação da nova tabela
-  id INT PRIMARY KEY,
-  id_sensor INT,
-  aceleracao_total FLOAT,
-  status VARCHAR(20),
-  FOREIGN KEY (id_sensor) REFERENCES SENSORES(id_sensor)
-  );
- 
- INSERT INTO MEDICAO_VIBRACAO (id, id_sensor, aceleracao_total, status) //Adição dos dados contidos na tabela anterior
- SELECT ID, id_sensor, Aceleracao_Total, Status
- FROM medicao_vibracao_old;
- 
- DROP TABLE medicao_vibracao_old; // Deletar tabela antiga
+```python
+# Trecho do import_data.py que popula a tabela de vibração
+df_vibracao = pd.read_csv('data/medicao_vibracao.csv')
+df_vibracao['id_sensor'] = 3 # Associa ao sensor de vibração
+df_vibracao = df_vibracao.rename(columns={'ID': 'id', 'Aceleracao_Total': 'aceleracao_total', 'Status': 'status'})
+df_vibracao.to_sql('MEDICAO_VIBRACAO', conn, if_exists='append', index=False)
   
 ```
+
+### Integração com Ferramentas de Visualização
+
+O banco de dados foi modelado de forma relacional e centralizada não apenas para servir ao modelo de Machine Learning, mas também para funcionar como uma fonte de dados robusta para ferramentas de Business Intelligence (BI). Em uma implementação industrial, os dados armazenados poderiam ser conectados a plataformas como **Power BI**, **Tableau** ou **Grafana** para a criação de dashboards interativos. Isso permitiria que os gestores da linha de produção monitorem a saúde dos equipamentos em tempo real, analisem tendências históricas e tomem decisões mais assertivas baseadas em dados visuais.
 
 ---
 
@@ -465,33 +490,91 @@ A partir das informações recebidas e registradas, deverão ser armazenadas em 
 
 # 🖥️ Machine Learning
 
+O objetivo do modelo de Machine Learning é classificar o status de operação com base nas leituras dos sensores. O processo foi documentado no notebook `machine_learning.ipynb`.
+
+1.  **Carga e Unificação dos Dados**
+    
+    Os dados de todas as tabelas de medição foram unificados com uma consulta SQL diretamente no banco de dados, criando um único DataFrame para o treinamento.
+
+    ```python
+    # Unifica os dados de todos os sensores
+    query = """
+    SELECT 'nivel' as tipo, nivel_cm as medicao, status FROM MEDICAO_NIVEL
+    UNION ALL
+    SELECT 'temperatura' as tipo, medicao, status FROM MEDICAO_TEMPERATURA
+    UNION ALL
+    SELECT 'vibracao' as tipo, aceleracao_total as medicao, status FROM MEDICAO_VIBRACAO;
+    """
+    df = pd.read_sql_query(query, conn)
+    ```
+
+2.  **Treinamento do Modelo**
+    
+    Foi utilizado um modelo de Árvore de Decisão (DecisionTreeClassifier), escolhido por sua simplicidade e interpretabilidade. Os dados foram divididos em 70% para treino e 30% para teste.
+
+3.  **Resultados e Avaliação**
+    
+    O modelo alcançou uma acurácia de 100% no conjunto de teste. Este resultado perfeito é esperado, pois os dados foram gerados com regras de classificação claras. Isso valida que o modelo aprendeu perfeitamente as regras definidas, servindo como uma excelente prova de conceito. Todavia, em um cenário real, os dados teriam mais "ruído" e as fronteiras entre as classes não seriam tão perfeitas, o que levaria a uma acurácia menor, mas ainda assim o modelo seria útil.
+    
+    Para visualizar a performance, foi gerada uma Matriz de Confusão.
+
+    ![Matriz de Confusão](img/matriz_confusao.png)
+
+4.  **Justificativa da Visualização**
+    
+    A Matriz de Confusão é a ferramenta padrão para avaliar modelos de classificação. A diagonal principal mostra o número de previsões corretas para cada classe. No nosso caso, todos os valores estão na diagonal principal, confirmando que o modelo classificou todas as 450 amostras de teste corretamente, sem nenhum erro. Isso é muito mais informativo do que apenas a acurácia geral.
+
 
 ## 📁 Estrutura do Repositório
 
 ```bash
 /enterprise-challenge-phase04
+/
+├── .sql/
+│   └── schema.sql                  # Script DDL para criação da estrutura do banco
+│
+├── data/
+│   ├── medicao_nivel.csv           # Dados simulados do sensor de nível
+│   ├── medicao_temperatura.csv     # Dados simulados do sensor de temperatura
+│   └── medicao_vibracao.csv        # Dados simulados do sensor de vibração
+│
+├── .json/
+│   ├── diagram_DS18B20.json        # Diagrama de circuito para o Wokwi
+│   ├── diagram_HC-SR04.json        # "
+│   └── diagram_MPU6050.json        # "
+│
+├── notebooks/
+│   ├── grafico.ipynb               # (Opcional) Notebook para geração de gráficos avulsos
+│   └── machine_learning.ipynb      # Notebook principal com o treino e avaliação do modelo
+│
+├── scripts/
+│   ├── update_diagram.py           # Script para atualizar o diagrama do Wokwi automaticamente
+|   └── import_data.py              # Script para popular banco de dados com dados de medição
+│
 ├── src/
-│   ├──main.cpp
+│   ├── ds18b20_main.cpp            # Código-fonte da simulação para o sensor de temperatura
+│   ├── hcsr04_main.cpp             # Código-fonte da simulação para o sensor de nível
+│   └── mpu6050_main.cpp            # Código-fonte da simulação para o sensor de vibração
 │
-├── diagram.json                # Circuito simulado no Wokwi
-├── platformio.ini              # Configuração do PlatformIO
-├── wokwi.toml                  # Caminho para firmware na simulação
-├── dados_temperatura.csv       # Registro dos dados
-├── grafico.ipynb               # Gráfico de temperatura simulada
-│ 
-├── img/                        # Imagens utilizadas no README
-│   ├── circuito.png            # Print do circuito no Wokwi
-│   ├── logo_fiap.png           # Logo da faculdade
-│   ├── grafico.png             # Imagem do gráfico
-│   ├── simulacao.png           # Imagem da simulação no Wokwi
-       
-│
-├── .gitignore                  # Arquivos/pastas ignorados pelo Git
-└── README.md                   # Documentação geral do projeto
+├── .gitignore                      # Arquivos ignorados pelo Git
+├── diagram.json                    # Arquivo de diagrama ATUAL do Wokwi (gerado via script)
+├── platformio.ini                  # Configuração do PlatformIO com múltiplos ambientes
+├── README.md                       # Esta documentação
+└── wokwi.toml                      # Configuração do Wokwi para carregar o firmware
 ```
 ---
 
 ## 🧠 Conclusão
+
+Nesta fase do projeto, evoluímos da simulação de dados para a construção de uma solução de dados completa e integrada. A criação de um banco de dados relacional e a automação da importação de dados estabeleceram uma base sólida e escalável. A aplicação de um modelo de Machine Learning demonstrou com sucesso a capacidade de extrair insights preditivos, validando o pipeline de ponta a ponta. O projeto agora não apenas coleta e armazena dados, mas também os utiliza para gerar inteligência, cumprindo plenamente os objetivos da manutenção preditiva.
+
+---
+
+## 🎬 Vídeo Explicativo
+
+Assista ao vídeo de até 5 minutos explicando e justificando o projeto desta fase:
+
+[Link para o vídeo no YouTube (Não Listado)]()
 
 ---
 
