@@ -55,7 +55,7 @@ Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challe
 O projeto foi estruturado como um pipeline de dados semi-automatizado, garantindo um fluxo de trabalho eficiente desde a simulação até a análise preditiva.
 
 - **Simulação de Sensores (Wokwi + PlatformIO):** O projeto utiliza múltiplos ambientes no PlatformIO, um para cada sensor (DS18B20, MPU6050, HC-SR04). Ao selecionar e compilar um ambiente, um script de pré-compilação (`update_diagram.py`) atualiza automaticamente o arquivo `diagram.json`, garantindo que o Wokwi sempre carregue o circuito correto para a simulação.
-- **Coleta de Dados (Manual):** Os dados gerados no monitor serial do Wokwi são coletados e salvos nos respectivos arquivos `.csv` NA PASTA `data/`.
+- **Coleta de Dados (Manual):** Os dados gerados no monitor serial do Wokwi são coletados e salvos nos respectivos arquivos `.csv` na pasta `data/`.
 - **Estruturação de Dados (SQLite):** Um script Python (`import_data.py`) lê os arquivos `.csv`, cria um banco de dados SQLite com base em um esquema pré-definido (`schema.sql`) e popula as tabelas.
 - **Machine Learning (Jupyter Notebook):** O notebook (`machine_learning.ipynb`) conecta-se ao banco de dados para treinar, testar e avaliar um modelo de classificação com `Scikit-learn`.
 
@@ -68,12 +68,14 @@ O projeto foi estruturado como um pipeline de dados semi-automatizado, garantind
 - Python 3.8+
 - Visual Studio Code com as extensões:
   - PlatformIO IDE: Essencial para compilar e simular o código do ESP32.
+  - Wokwi for VS Code: Necessária para rodar a simulação dos circuitos.
   - Jupyter: Para executar os notebooks de análise.
   - SQLite Viewer: (Opcional) Para inspecionar o banco de dados.
 
 
 
 ### Passo a Passo
+O processo completo é dividido em 3 fases principais: gerar os dados, estruturá-los no banco de dados e, finalmente, treinar o modelo de Machine Learning.
 
 ## 🔹 Fase 1: Geração de Dados Simulados (Wokwi)
 
@@ -81,49 +83,32 @@ Existem duas maneiras de gerar os dados. Escolha a que melhor se adapta à sua n
 
 ---
 
-### ⚡ Fluxo 1: Método Simples (Sensor por Sensor)
+1. **Escolha o ambiente do sensor**  
+   - Clique no ícone do PlatformIO (formiga) na barra lateral esquerda do VS Code.
+   - Em PROJECT TASKS, expanda a lista e escolha o ambiente do sensor que deseja simular (ex: `sensor_nivel_hcsr04`).
 
-Ideal para quando você está focado em apenas **um sensor** ou para um **primeiro contato** com o projeto.  
-(Envolve recompilar a cada troca de sensor.)
+2. **Compile o Código (Build):**  
+   - Clique na opção Build dentro do ambiente escolhido. 
+   - Aguarde a mensagem de SUCCESS no terminal. Esse processo também executa o script `update_diagram.py`, que atualiza o arquivo `diagram.json` com o circuito correto.
 
-1. **Selecione o Ambiente**  
-   - Na barra de status azul do VS Code (canto inferior), escolha o sensor desejado.  
-   - Exemplo: `env:sensor_nivel_hcsr04`.
-
-2. **Compile o Ambiente (Build)**  
-   - Clique no ícone de **✓ (check)** na barra de ferramentas do PlatformIO.  
-   - O script `update_diagram.py` atualizará o `diagram.json` automaticamente.
-
-3. **Ajuste o Firmware no `wokwi.toml`**  
-   - Edite a linha `firmware` para apontar para o `.elf` do ambiente compilado:  
-
+3. **Ajuste o `wokwi.toml`**  
+   - Abra o arquivo `wokwi.toml` na raiz do projeto.
+   - Altere a linha firmware para apontar para o arquivo `.elf` do sensor que você acabou de compilar. O caminho correto será exibido no terminal após o build.
+     - Exemplo para o sensor de nível:
+       
      ```toml
      firmware = ".pio/build/sensor_nivel_hcsr04/firmware.elf"
      ```
 
 4. **Inicie a Simulação**  
-   - Execute: **F1 > Wokwi: Start Simulator**.  
-   - Colete os dados no Serial Monitor.
+   - Pressione F1 para abrir a paleta de comandos do VS Code. 
+   - Digite e selecione Wokwi: Start Simulator.
+   - A simulação iniciará em uma nova aba. Copie os dados gerados no Serial Monitor e salve-os no arquivo `.csv` correspondente dentro da pasta `data/`.
+
+5. **Repita para os Outros Sensores**  
+   - Para gerar os dados dos outros sensores, repita os passos de 1 a 4, selecionando o ambiente e atualizando o `wokwi.toml` para cada um.
 
 ---
-
-### ⚡ Fluxo 2: Método Avançado (Compilar Tudo de Uma Vez)
-
-Recomendado para **desenvolvimento e testes**, quando há necessidade de alternar entre sensores com frequência.  
-(A troca é quase instantânea.)
-
-#### Etapa Única de Compilação
-No terminal do PlatformIO, execute o comando `platformio run`. Isso compilará todos os ambientes de uma vez, criando os três arquivos `firmware.elf` em suas respectivas pastas dentro de `.pio/build/`.
-
-#### Ciclo Rápido de Simulação (para cada troca de sensor):
-  1. Sincronize o Diagrama do Circuito: Copie o conteúdo do arquivo JSON do sensor desejado (ex: `.json/diagram_HC-SR04.json`) e cole no arquivo `diagram.json` da raiz do projeto.
-
-  2. Ajuste o Firmware no `wokwi.toml`: Aponte a linha firmware para o `.elf` do sensor escolhido, como no Fluxo 1.
-
-  3. Inicie a Simulação e colete os dados. Para trocar de sensor, basta repetir estes dois passos manuais.
-
-
-
 
 ## 🔹 Fase 2: Estruturação dos Dados
 
@@ -132,15 +117,20 @@ No terminal do PlatformIO, execute o comando `platformio run`. Isso compilará t
     pip install pandas scikit-learn matplotlib seaborn
   ```
 
-  2. Execute o script de importação para criar e popular o banco de dados `hermes_db.sqlite`:
+  2. Execute o script de importação para criar e popular o banco de dados `hermes_db.sqlite` e populá-lo com os dados dos arquivos CSV:
   ```bash
     python scripts/import_data.py
   ```
 
 ## 🔹 Fase 3: Análise com Machine Learning
 
-  1. Abra o arquivo notebooks/machine_learning.ipynb.
+  1. (Opcional) Análise Exploratória:
+       - Abra o notebook `notebooks/grafico.ipynb`.
+       - Execute as células para gerar gráficos individuais para cada tipo de sensor, permitindo uma visualização inicial dos dados coletados.
+         
   2. Clique em "Executar Tudo" (Run All). O notebook irá treinar o modelo e exibir a Matriz de Confusão com os resultados.
+       - Abra o notebook principal `notebooks/machine_learning.ipynb`.
+       - Clique em **"Executar Tudo" (Run All)**. O notebook irá carregar os dados do banco, treinar o modelo de classificação e exibir a Matriz de Confusão com os resultados finais.
 
 
 
@@ -152,7 +142,7 @@ O sensor **DS18B20** foi escolhido para a leitura precisa de temperatura, o **MP
 
 ## 🔌 Esquema dos Circuitos
 
-## 💨 MPU5060
+## 💨 MPU6050
 ![Circuito MPU5060](img/mpu5060.JPG)
 
 ---
@@ -166,7 +156,7 @@ O trecho abaixo representa a lógica principal do projeto, responsável por:
 - Exibir os dados simulados no Monitor Serial em formato CSV (separado por vírgulas), facilitando análise posterior ou exportação.
 
 ```cpp
-// Trecho representativo da leitura e visualização dos dados do MPU5060
+// Trecho representativo da leitura e visualização dos dados do MPU6050
 
 // Definição dos limites para classificação em NORMAL, ALERTA_Pre_falha ou FALHA_CRITICA
 const double LIMITE_ALERTA = 16500.0; 
@@ -203,7 +193,7 @@ if (accTotal < LIMITE_ALERTA) {
 
 ---
 
-### 🔌 Simulação no Wokwi - MPU5060 e ESP32
+### 🔌 Simulação no Wokwi - MPU6050 e ESP32
 ![Simulação MPU6050](img/mpu5060_terminal.JPG)
 
 ---
@@ -218,11 +208,11 @@ if (accTotal < LIMITE_ALERTA) {
 
 ---
 
-### 📊 Gráfico Gerado MPU5060
+### 📊 Gráfico Gerado MPU6050
 
 ![Gráfico de Vibração](img/grafico_mpu5060.png)
 
-### 📝 Estrutura e Racional do Gráfico MPU5060
+### 📝 Estrutura e Racional do Gráfico MPU6050
 
 O gráfico gerado apresenta a variação da aceleração simulada ao longo das medições, com o eixo X representando as medições (totalizando 500 medições) e o eixo Y representando a vibração em LSB/g (Least Significant Bit por g). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
 
