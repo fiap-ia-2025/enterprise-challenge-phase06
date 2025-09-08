@@ -348,7 +348,7 @@ const float NIVEL_ALERTA_MAX = 19.0;
 1. O ESP32 simulado lê a distância do líquido até o sensor HC-SR04 a cada 1 segundo.
 2. A temperatura é simulada com valores variados, conforme a oscilação.
 3. Os dados são classificados automaticamente em três status:
-   - **NORMAL**: de 19 a 20cm
+   - **NORMAL**: acima de 20cm
    - **ALERTA_Pre_falha**: de 16 a 18cm
    - **FALHA_CRITICA**: abaixo de 16cm
 4. Os dados são exibidos no **Monitor Serial** no formato CSV:  
