@@ -267,9 +267,9 @@ if (temperatura >= TEMPERATURA_NORMAL_MIN && temperatura <= TEMPERATURA_NORMAL_M
 1. O ESP32 simulado lê a temperatura da máquina a cada 1 segundo através do DS18B20.
 2. A temperatura é simulada com valores variados, conforme a oscilação.
 3. Os dados são classificados automaticamente em três status:
-   - **NORMAL**: até 6ºC
-   - **ALERTA_Pre_falha**: de 6ºC até 10ºC
-   - **FALHA_CRITICA**: acima de 10ºC
+   - **NORMAL**: de -1ºC até 6ºC
+   - **ALERTA_Pre_falha**: de 6.1ºC até 10ºC ou de -1.1ºC até -6ºC 
+   - **FALHA_CRITICA**: acima de 10ºC ou abaixo de -6.1ºC
 4. Os dados são exibidos no **Monitor Serial** no formato CSV:  
    `ID, Temperatura, Status`
 
@@ -296,8 +296,8 @@ if (temperatura >= TEMPERATURA_NORMAL_MIN && temperatura <= TEMPERATURA_NORMAL_M
 O gráfico gerado apresenta a variação da temnperatura simulada ao longo das medições (totalizando 500 medições). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
 
 - **NORMAL (verde)**: Temperatura abaixo de 6ºC - operação dentro do esperado.
-- **ALERTA_Pre_falha (laranja)**: Temmperatura de 6ºC até 10ºC - possível acerelação demasiada, atenção recomendada.
-- **FALHA_CRITICA (vermelho)**: Temperatura acima de 10ºC - – indicativo de falha crítica, requer ação imediata.
+- **ALERTA_Pre_falha (laranja)**: Temmperatura de 6ºC até 10ºC - possível temperatura demasiada, atenção recomendada.
+- **FALHA_CRITICA (vermelho)**: Temperatura acima de 10ºC - indicativo de falha crítica, requer ação imediata.
 
 
 ## 〰️ HC-SR04
@@ -376,8 +376,8 @@ const float NIVEL_ALERTA_MAX = 19.0;
 O gráfico gerado apresenta a variação do nível de enchimentos dos recipientes simulado ao longo das medições (totalizando 500 medições). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
 
 - **NORMAL (verde)**: Nível de 19 a 20cm - operação dentro do esperado.
-- **ALERTA_Pre_falha (laranja)**: Nível de 16 a 18cm - possível acerelação demasiada, atenção recomendada.
-- **FALHA_CRITICA (vermelho)**: Nível abaixo de 16cm - – indicativo de falha crítica, requer ação imediata.
+- **ALERTA_Pre_falha (laranja)**: Nível de 16 a 18cm - possível nível de enchimento demasiado, atenção recomendada.
+- **FALHA_CRITICA (vermelho)**: Nível abaixo de 16cm - indicativo de falha crítica, requer ação imediata.
 
 ---
 
