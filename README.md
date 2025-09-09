@@ -295,9 +295,9 @@ if (temperatura >= TEMPERATURA_NORMAL_MIN && temperatura <= TEMPERATURA_NORMAL_M
 
 O gráfico gerado apresenta a variação da temnperatura simulada ao longo das medições (totalizando 500 medições). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
 
-- **NORMAL (verde)**: Temperatura abaixo de 6ºC - operação dentro do esperado.
-- **ALERTA_Pre_falha (laranja)**: Temmperatura de 6ºC até 10ºC - possível temperatura demasiada, atenção recomendada.
-- **FALHA_CRITICA (vermelho)**: Temperatura acima de 10ºC - indicativo de falha crítica, requer ação imediata.
+- **NORMAL (verde)**: Temperatura de -1ºC até 6ºC - operação dentro do esperado.
+- **ALERTA_Pre_falha (laranja)**: Temperatura de 6.1ºC até 10ºC ou de -1.1ºC até -6ºC - possível temperatura demasiada, atenção recomendada.
+- **FALHA_CRITICA (vermelho)**: Temperatura acima de 10ºC ou abaixo de -6.1ºC - indicativo de falha crítica, requer ação imediata.
 
 
 ## 〰️ HC-SR04
@@ -375,7 +375,7 @@ const float NIVEL_ALERTA_MAX = 19.0;
 
 O gráfico gerado apresenta a variação do nível de enchimentos dos recipientes simulado ao longo das medições (totalizando 500 medições). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
 
-- **NORMAL (verde)**: Nível de 19 a 20cm - operação dentro do esperado.
+- **NORMAL (verde)**: Nível acima de 20cm - operação dentro do esperado.
 - **ALERTA_Pre_falha (laranja)**: Nível de 16 a 18cm - possível nível de enchimento demasiado, atenção recomendada.
 - **FALHA_CRITICA (vermelho)**: Nível abaixo de 16cm - indicativo de falha crítica, requer ação imediata.
 
