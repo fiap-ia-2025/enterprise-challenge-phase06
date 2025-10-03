@@ -114,7 +114,7 @@ Existem duas maneiras de gerar os dados. Escolha a que melhor se adapta à sua n
 
   1. Instale as dependências Python:
   ```bash
-    pip install pandas scikit-learn matplotlib seaborn
+    pip install pandas scikit-learn matplotlib seaborn plotly
   ```
 
   2. Execute o script de importação para criar e popular o banco de dados `hermes_db.sqlite` e populá-lo com os dados dos arquivos CSV:

@@ -3,16 +3,34 @@
   "author": "Anonymous maker",
   "editor": "wokwi",
   "parts": [
-    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": -4.76, "attrs": {} },
-    { "type": "wokwi-hc-sr04", "id": "ultrasonic1", "top": -113.7, "left": -119.3, "attrs": {} }
+    { "type": "wokwi-breadboard-half", "id": "bb1", "top": 121.8, "left": -102.8, "attrs": {} },
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -124.8, "left": 72.04, "attrs": {} },
+    { "type": "board-ds18b20", "id": "temp1", "top": 123.67, "left": -5.52, "attrs": {} },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 216,
+      "left": -19.75,
+      "rotate": 90,
+      "attrs": { "value": "4700" }
+    }
   ],
   "connections": [
     [ "esp:TX", "$serialMonitor:RX", "", [] ],
     [ "esp:RX", "$serialMonitor:TX", "", [] ],
-    [ "esp:5V", "ultrasonic1:VCC", "red", [ "h0" ] ],
-    [ "ultrasonic1:TRIG", "esp:13", "green", [ "v0" ] ],
-    [ "ultrasonic1:ECHO", "esp:12", "green", [ "v0" ] ],
-    [ "ultrasonic1:GND", "esp:GND.2", "black", [ "v9.6", "h118.76" ] ]
+    [ "temp1:VCC", "esp:3V3", "red", [ "h28.8", "v-76.8" ] ],
+    [ "r1:2", "esp:3V3", "orange", [ "h-28.8", "v-337.2" ] ],
+    [ "temp1:GND", "bb1:9t.a", "", [ "$bb" ] ],
+    [ "temp1:DQ", "bb1:10t.a", "", [ "$bb" ] ],
+    [ "temp1:VCC", "bb1:11t.a", "", [ "$bb" ] ],
+    [ "bb1:tp.5", "bb1:6t.a", "red", [ "v0" ] ],
+    [ "esp:GND.1", "bb1:9t.b", "black", [ "h0" ] ],
+    [ "bb1:tn.4", "bb1:5t.a", "black", [ "v0" ] ],
+    [ "r1:1", "bb1:10t.c", "", [ "$bb" ] ],
+    [ "r1:2", "bb1:10b.g", "", [ "$bb" ] ],
+    [ "esp:4", "bb1:10t.b", "green", [ "h28.8", "v163.2", "h-192" ] ],
+    [ "bb1:tp.3", "bb1:4b.g", "red", [ "v0" ] ],
+    [ "bb1:tn.2", "bb1:3b.g", "black", [ "v0" ] ]
   ],
   "dependencies": {}
 }
