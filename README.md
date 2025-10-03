@@ -8,10 +8,10 @@
 
 ---
 
-# 📦 Enterprise Challenge - Sprint 3
+# 📦 Enterprise Challenge - Sprint 4
 
 
-## 👥 Grupo 26
+## 👥 Grupo 18
 
 
 ## 👨‍🎓 Integrantes:
@@ -30,23 +30,14 @@
 ---
 
 # 📜 Descrição do Projeto
-## 🚀 Introdução
 
-Dando continuidade ao projeto de manutenção preditiva em linhas de envase, esta fase avança da simulação de sensores para a estruturação e análise de dados. Transformamos os dados coletados em um banco de dados relacional robusto e, a partir dele, desenvolvemos um modelo de Machine Learning para extrair insights valiosos. Esta etapa representa um ciclo completo de uma solução de digitalização industrial, conectando a coleta de dados, o armazenamento estruturado e a aplicação de inteligência preditiva.
+## 🧠 Objetivo e Motivação
 
+Este projeto tem como foco a prevenção de falhas em linhas de envase da indústria de bebidas, especificamente no setor de engarrafamento de cervejas e refrigerantes. Este segmento foi escolhido por sua natureza altamente automatizada, com produção contínua e volumes expressivos, em que qualquer interrupção inesperada pode resultar em perdas significativas de insumos, produtividade e qualidade do produto final.
 
-Link do repositório Sprint 1: https://github.com/fiap-ia-2025/enterprise-challenge-phase03
+As principais causas dessas falhas muitas vezes estão associadas a pequenas variações em variáveis operacionais como temperatura, pressão e vibração, que passam despercebidas por sistemas de monitoramento tradicionais. Ao mesmo tempo, esse setor apresenta alta maturidade tecnológica e viabilidade para adoção de soluções digitais de predição e automação.
 
----
-
-## 🎯 Objetivo
-
-- **Modelar um banco de dados relacional** funcional e normalizado para os dados dos sensores.
-- **Criar um script SQL (`schema.sql`)** para definir a estrutura do banco.
-- **Desenvolver um script Python (`import_data.py`)** para automatizar a criação e o povoamento do banco de dados a partir dos arquivos CSV.
-- **Treinar um algoritmo de Machine Learning** para classificar o status operacional (`NORMAL`, `ALERTA_Pre_falha`, `FALHA_CRITICA`).
-- **Gerar e justificar visualizações** que demonstrem a performance do modelo.
-- **Documentar todo o processo** no GitHub, garantindo clareza e reprodutibilidade.
+Nesse contexto, o projeto propõe o desenvolvimento de uma solução digital de manutenção preditiva, utilizando sensores simulados para monitoramento dessas variáveis críticas. Os dados são coletados por meio dos sensores ligados a ESP32, ingeridos manualmente em um aquivo do tipo CSV, e persistidos em banco de dados local. Esses dados armezados em banco de dados relacional são utilizados no treinamento de um modelo que prevê as falhas nas linhas de envase. Características específicas desses dados assim como previsões baseadas no modelo são apresentadas numa interface streamlit.
 
 ---
 
@@ -58,6 +49,7 @@ O projeto foi estruturado como um pipeline de dados semi-automatizado, garantind
 - **Coleta de Dados (Manual):** Os dados gerados no monitor serial do Wokwi são coletados e salvos nos respectivos arquivos `.csv` na pasta `data/`.
 - **Estruturação de Dados (SQLite):** Um script Python (`import_data.py`) lê os arquivos `.csv`, cria um banco de dados SQLite com base em um esquema pré-definido (`schema.sql`) e popula as tabelas.
 - **Machine Learning (Jupyter Notebook):** O notebook (`machine_learning.ipynb`) conecta-se ao banco de dados para treinar, testar e avaliar um modelo de classificação com `Scikit-learn`.
+- **Dashboard** Interface criada com uso do `Streamlit` que apresenta gráficos, métricas e possibilita o uso do modelo de Machine Learning.
 
 ---
 
@@ -73,9 +65,8 @@ O projeto foi estruturado como um pipeline de dados semi-automatizado, garantind
   - SQLite Viewer: (Opcional) Para inspecionar o banco de dados.
 
 
-
 ### Passo a Passo
-O processo completo é dividido em 3 fases principais: gerar os dados, estruturá-los no banco de dados e, finalmente, treinar o modelo de Machine Learning.
+O processo completo é dividido em 4 fases principais: gerar os dados, estruturá-los no banco de dados, treinar o modelo de Machine Learning e apresentar os dados em Dashboard.
 
 ## 🔹 Fase 1: Geração de Dados Simulados (Wokwi)
 
@@ -132,6 +123,16 @@ Existem duas maneiras de gerar os dados. Escolha a que melhor se adapta à sua n
        - Abra o notebook principal `notebooks/machine_learning.ipynb`.
        - Clique em **"Executar Tudo" (Run All)**. O notebook irá carregar os dados do banco, treinar o modelo de classificação e exibir a Matriz de Confusão com os resultados finais.
 
+## 🔹 Fase 4: Dashboard
+
+ 1. Vá para a pasta /src/streamlit
+ 2. Execute o seguinte comando
+
+  ```bash
+    streamlit run app.py
+  ```
+
+3. Abra o seguinte endereço no navegador: http://localhost:8501/
 
 
 ## 📌 Justificativa da Escolha do Sensor
@@ -143,42 +144,6 @@ O sensor **DS18B20** foi escolhido para a leitura precisa de temperatura, o **MP
 ## 🔌 Esquema dos Circuitos
 
 ## 💨 MPU6050
-![Circuito MPU5060](img/mpu5060.JPG)
-
----
-
-### 🧾 Trecho Representativo do Código MPU6050
-
-O trecho abaixo representa a lógica principal do projeto, responsável por:
-
-- Simular a leitura de vibração com base na aceleração detectada na máquina;
-- Classificar o status do sistema em três níveis: `NORMAL`, `ALERTA_Pre_falha` ou `FALHA_CRITICA`;
-- Exibir os dados simulados no Monitor Serial em formato CSV (separado por vírgulas), facilitando análise posterior ou exportação.
-
-```cpp
-// Trecho representativo da leitura e visualização dos dados do MPU6050
-
-// Definição dos limites para classificação em NORMAL, ALERTA_Pre_falha ou FALHA_CRITICA
-const double LIMITE_ALERTA = 16500.0; 
-const double LIMITE_FALHA = 25000.0;
-
-// Exibe os dados formatados no Monitor Serial
-Serial.print(contador + 1);
-Serial.print(",");
-Serial.print(accTotal);
-Serial.print(",");
-
-// Classificação do status no Monitor Serial
-if (accTotal < LIMITE_ALERTA) {
-  Serial.println("NORMAL");
-} else if (accTotal < LIMITE_FALHA) {
-  Serial.println("ALERTA_Pre_falha");
-} else {
-  Serial.println("FALHA_CRITICA");
-}
-
-```
----
 
 ### ⚙️ Funcionamento do Sistema MPU6050
 
@@ -196,71 +161,10 @@ if (accTotal < LIMITE_ALERTA) {
 ### 🔌 Simulação no Wokwi - MPU6050 e ESP32
 ![Simulação MPU6050](img/mpu5060_terminal.JPG)
 
----
-
-### 🧪 Exemplo de Dados Coletados MPU6050
-
-| ID | Aceleracao_Total| Status          |
-|----------|----------------|------------------|
-| 32   | 5049.47           | NORMAL           |
-| 97    | 18426.64         | ALERTA_Pre_falha |
-| 213    | 52453.14         | FALHA_CRITICA    |
-
----
-
-### 📊 Gráfico Gerado MPU6050
-
-![Gráfico de Vibração](img/grafico_mpu5060.png)
-
-### 📝 Estrutura e Racional do Gráfico MPU6050
-
-O gráfico gerado apresenta a variação da aceleração simulada ao longo das medições, com o eixo X representando as medições (totalizando 500 medições) e o eixo Y representando a vibração em LSB/g (Least Significant Bit por g). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
-
-- **NORMAL (verde)**: Aceleração abaixo de 16500.0LSB/g - operação dentro do esperado.
-- **ALERTA_Pre_falha (laranja)**: Aceleração de 16500.0LSB/g até 25000.0LSB/g - possível acerelação demasiada, atenção recomendada.
-- **FALHA_CRITICA (vermelho)**: Aceleração acima de 25000.0LSB/g - – indicativo de falha crítica, requer ação imediata.
 
 ---
 
 ## 🌡️ DS18B20
-![Circuito DS18B20](img/DS18B20.JPG)
-
-### 🧾 Trecho Representativo do Código DS18B20
-
-O trecho abaixo representa a lógica principal do projeto, responsável por:
-
-- Simular a leitura de temperatura de bebidas geladas com envase a frio;
-- Classificar o status do sistema em três níveis: `NORMAL`, `ALERTA_Pre_falha` ou `FALHA_CRITICA`;
-- Exibir os dados simulados no Monitor Serial em formato CSV (separado por vírgulas), facilitando análise posterior ou exportação.
-
-```cpp
-// Trecho representativo da leitura e visualização dos dados do DS18B20
-
-// Definição dos limites para classificação em NORMAL, ALERTA_Pre_falha ou FALHA_CRITICA
-const float TEMPERATURA_NORMAL_MIN = -1.0;
-const float TEMPERATURA_NORMAL_MAX = 6.0;
-const float TEMPERATURA_FALHA_CRITICA_MIN = -6.0;
-const float TEMPERATURA_FALHA_CRITICA_MAX = 10.0;
-
-// Exibe os dados formatados no Monitor Serial
-Serial.print(contador + 1);
-Serial.print(",");
-Serial.print(temperatura);
-Serial.print(",");
-
-// Classificação do status no Monitor Serial
-if (temperatura >= TEMPERATURA_NORMAL_MIN && temperatura <= TEMPERATURA_NORMAL_MAX) {
-  Serial.println("NORMAL");
-} else if (temperatura < TEMPERATURA_NORMAL_MIN || temperatura > TEMPERATURA_NORMAL_MAX) 
-      
-  if (temperatura >= TEMPERATURA_FALHA_CRITICA_MIN && temperatura <= TEMPERATURA_FALHA_CRITICA_MAX) {
-      Serial.println("ALERTA_Pre_falha");
-  } else {
-      Serial.println("FALHA_CRITICA");
-      }
-
-```
----
 
 ### ⚙️ Funcionamento do Sistema DS18B20
 
@@ -278,70 +182,9 @@ if (temperatura >= TEMPERATURA_NORMAL_MIN && temperatura <= TEMPERATURA_NORMAL_M
 ### 🔌 Simulação no Wokwi - DS18B20 e ESP32
 ![Simulação DS18B20](img/ds18b20_terminal.JPG)
 
-
-### 🧪 Exemplo de Dados Coletados DS18B20
-
-| ID | Temperatura | Status          |
-|----------|----------------|------------------|
-| 17   | 1.37          | NORMAL           |
-| 65   | 8.38         | ALERTA_Pre_falha |
-| 118   | 14.25         | FALHA_CRITICA    |
-
-### 📊 Gráfico Gerado DS18B20
-
-![Gráfico de Temperatura](img/grafico_DS18B20.png)
-
-### 📝 Estrutura e Racional do Gráfico DS18B20
-
-O gráfico gerado apresenta a variação da temnperatura simulada ao longo das medições (totalizando 500 medições). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
-
-- **NORMAL (verde)**: Temperatura de -1ºC até 6ºC - operação dentro do esperado.
-- **ALERTA_Pre_falha (laranja)**: Temperatura de 6.1ºC até 10ºC ou de -1.1ºC até -6ºC - possível temperatura demasiada, atenção recomendada.
-- **FALHA_CRITICA (vermelho)**: Temperatura acima de 10ºC ou abaixo de -6.1ºC - indicativo de falha crítica, requer ação imediata.
-
+---
 
 ## 〰️ HC-SR04
-![Circuito HC-SR04](img/HC-SR04.JPG)
-
-
-### 🧾 Trecho Representativo do Código HC-SR04
-
-O trecho abaixo representa a lógica principal do projeto, responsável por:
-
-- Simular a leitura de nível de enchimento dos recipientes de bebidas;
-- Classificar o status do sistema em três níveis: `NORMAL`, `ALERTA_Pre_falha` ou `FALHA_CRITICA`;
-- Exibir os dados simulados no Monitor Serial em formato CSV (separado por vírgulas), facilitando análise posterior ou exportação.
-
-```cpp
-// Trecho representativo da leitura e visualização dos dados do HC-SR04
-
-// Definição dos limites para classificação em NORMAL, ALERTA_Pre_falha ou FALHA_CRITICA
-const float ALTURA_MAXIMA = 20.0;
-const float NIVEL_NORMAL_MIN = 19.0;
-const float NIVEL_NORMAL_MAX = 20.0;
-const float NIVEL_ALERTA_MIN = 16.0;
-const float NIVEL_ALERTA_MAX = 19.0;
-
-// Exibe os dados formatados no Monitor Serial
- Serial.print(contador + 1);
-    Serial.print(",");
-    Serial.print(distancia_cm);
-    Serial.print(",");
-    Serial.print(nivel_cm);
-    Serial.print(",");
-
- // Classificação do status no Monitor Serial   
-    if (nivel_cm >= NIVEL_NORMAL_MIN && nivel_cm <= NIVEL_NORMAL_MAX) {
-      Serial.println("NORMAL");
-    } else if (nivel_cm >= NIVEL_ALERTA_MIN && nivel_cm < NIVEL_NORMAL_MIN) {
-      Serial.println("ALERTA_Pre_falha");
-    } else {
-      Serial.println("FALHA_CRITICA");
-    }
-
-```
-
----
 
 ### ⚙️ Funcionamento do Sistema HC-SR04
 
@@ -358,26 +201,6 @@ const float NIVEL_ALERTA_MAX = 19.0;
 
 ### 🔌 Simulação no Wokwi - HC-SR04 e ESP32
 ![Simulação HC-SR04](img/HC-SR04_terminal.JPG)
-
-### 🧪 Exemplo de Dados Coletados HC-SR04
-
-| ID | Distancia_cm | Nivel_cm         | Status          |
-|----|--------------|------------------|-----------------|
-| 29 | 1.94         | 23.06            | NORMAL          |
-| 99 | 7.97         | 17.03            | ALERTA_Pre_falha|
-| 213| 9.07         | 15.93            | FALHA_CRITICA   |
-
-### 📊 Gráfico Gerado HC-SR04
-
-![Gráfico de Nível de Enchimento](img/grafico_HC-SR04.png)
-
-### 📝 Estrutura e Racional do Gráfico HC-SR04
-
-O gráfico gerado apresenta a variação do nível de enchimentos dos recipientes simulado ao longo das medições (totalizando 500 medições). Para facilitar a interpretação, a classificação foi colorida conforme **classificação automática do status operacional**:
-
-- **NORMAL (verde)**: Nível acima de 20cm - operação dentro do esperado.
-- **ALERTA_Pre_falha (laranja)**: Nível de 16 a 18cm - possível nível de enchimento demasiado, atenção recomendada.
-- **FALHA_CRITICA (vermelho)**: Nível abaixo de 16cm - indicativo de falha crítica, requer ação imediata.
 
 ---
 
@@ -433,18 +256,17 @@ Para garantir a consistência e reprodutibilidade do projeto, todo o processo de
     * Inserir os dados estáticos das máquinas e tipos de sensores.
     * Ler os arquivos `medicao_*.csv`, processá-los e inseri-los nas tabelas de medição correspondentes.
 
-```python
-# Trecho do import_data.py que popula a tabela de vibração
-df_vibracao = pd.read_csv('data/medicao_vibracao.csv')
-df_vibracao['id_sensor'] = 3 # Associa ao sensor de vibração
-df_vibracao = df_vibracao.rename(columns={'ID': 'id', 'Aceleracao_Total': 'aceleracao_total', 'Status': 'status'})
-df_vibracao.to_sql('MEDICAO_VIBRACAO', conn, if_exists='append', index=False)
-  
-```
+### Dashboard
 
-### Integração com Ferramentas de Visualização
+O Dashboard foi criado com o streamlit com o objetivo de apresentar métricas, gráficos e tornar o modelo de Machine Learning utilizável. Seguem abaixo imagens da interface:
 
-O banco de dados foi modelado de forma relacional e centralizada não apenas para servir ao modelo de Machine Learning, mas também para funcionar como uma fonte de dados robusta para ferramentas de Business Intelligence (BI). Em uma implementação industrial, os dados armazenados poderiam ser conectados a plataformas como **Power BI**, **Tableau** ou **Grafana** para a criação de dashboards interativos. Isso permitiria que os gestores da linha de produção monitorem a saúde dos equipamentos em tempo real, analisem tendências históricas e tomem decisões mais assertivas baseadas em dados visuais.
+![Imagem 1 Dashboard](img/dash_1.png)
+
+![Imagem 2 Dashboard](img/dash_2.png)
+
+![Imagem 3 Dashboard](img/dash_3.png)
+
+![Imagem 4 Dashboard](img/dash_4_ML.png)
 
 ---
 
@@ -536,7 +358,8 @@ O objetivo do modelo de Machine Learning é classificar o status de operação c
 ├── notebooks/
 │   ├── grafico.ipynb               # (Opcional) Notebook para geração de gráficos avulsos
 │   └── machine_learning.ipynb      # Notebook principal com o treino e avaliação do modelo
-│
+│   └── decision_tree_model.pkl     # Modelo treinado exportado
+│  
 ├── scripts/
 │   ├── update_diagram.py           # Script para atualizar o diagrama do Wokwi automaticamente
 |   └── import_data.py              # Script para popular banco de dados com dados de medição
@@ -556,7 +379,7 @@ O objetivo do modelo de Machine Learning é classificar o status de operação c
 
 ## 🧠 Conclusão
 
-Nesta fase do projeto, evoluímos da simulação de dados para a construção de uma solução de dados completa e integrada. A criação de um banco de dados relacional e a automação da importação de dados estabeleceram uma base sólida e escalável. A aplicação de um modelo de Machine Learning demonstrou com sucesso a capacidade de extrair insights preditivos, validando o pipeline de ponta a ponta. O projeto agora não apenas coleta e armazena dados, mas também os utiliza para gerar inteligência, cumprindo plenamente os objetivos da manutenção preditiva.
+refazer
 
 ---
 
