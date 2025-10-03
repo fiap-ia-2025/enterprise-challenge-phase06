@@ -16,3 +16,8 @@
 Thumbs.db
 *.exe
 *.dll
+anaconda_projects
+.ipynb_checkpoints
+__pycache__/
+*.pyc
+data/hermes_db.sqlite
