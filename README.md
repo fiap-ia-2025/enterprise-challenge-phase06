@@ -29,40 +29,34 @@
 
 ---
 
-# 📜 Descrição do Projeto
+## 📜 Descrição do Projeto  
 
-## 🧠 Objetivo e Motivação
-
-Este projeto tem como foco a prevenção de falhas em linhas de envase da indústria de bebidas, especificamente no setor de engarrafamento de cervejas e refrigerantes. Este segmento foi escolhido por sua natureza altamente automatizada, com produção contínua e volumes expressivos, em que qualquer interrupção inesperada pode resultar em perdas significativas de insumos, produtividade e qualidade do produto final.
-
-As principais causas dessas falhas muitas vezes estão associadas a pequenas variações em variáveis operacionais como temperatura, pressão e vibração, que passam despercebidas por sistemas de monitoramento tradicionais. Ao mesmo tempo, esse setor apresenta alta maturidade tecnológica e viabilidade para adoção de soluções digitais de predição e automação.
-
-Nesse contexto, o projeto propõe o desenvolvimento de uma solução digital de manutenção preditiva, utilizando sensores simulados para monitoramento dessas variáveis críticas. Os dados são coletados por meio dos sensores ligados a ESP32, ingeridos manualmente em um aquivo do tipo CSV, e persistidos em banco de dados local. Esses dados armezados em banco de dados relacional são utilizados no treinamento de um modelo que prevê as falhas nas linhas de envase. Características específicas desses dados assim como previsões baseadas no modelo são apresentadas numa interface streamlit.
+Solução de **manutenção preditiva** em linhas de envase de bebidas.  
+- **Sensores simulados (ESP32 + Wokwi):** temperatura (DS18B20), vibração (MPU6050) e nível (HC-SR04).  
+- **Armazenamento:** SQLite.  
+- **Análise preditiva:** modelo de Machine Learning (Árvore de Decisão).  
+- **Visualização:** dashboard em Streamlit.  
 
 ---
 
-## 🔧 Pipeline de Solução e Execução
+## 🔧 Pipeline de Solução  
 
-O projeto foi estruturado como um pipeline de dados semi-automatizado, garantindo um fluxo de trabalho eficiente desde a simulação até a análise preditiva.
+1. **Simulação de Sensores** → exporta dados em `.csv`.  
+2. **Estruturação de Dados** → importação para SQLite (`import_data.py`).  
+3. **Machine Learning** → treinamento e avaliação (`machine_learning.ipynb`).  
+4. **Dashboard** → visualização de métricas e previsões.  
 
-- **Simulação de Sensores (Wokwi + PlatformIO):** O projeto utiliza múltiplos ambientes no PlatformIO, um para cada sensor (DS18B20, MPU6050, HC-SR04). Ao selecionar e compilar um ambiente, um script de pré-compilação (`update_diagram.py`) atualiza automaticamente o arquivo `diagram.json`, garantindo que o Wokwi sempre carregue o circuito correto para a simulação.
-- **Coleta de Dados (Manual):** Os dados gerados no monitor serial do Wokwi são coletados e salvos nos respectivos arquivos `.csv` na pasta `data/`.
-- **Estruturação de Dados (SQLite):** Um script Python (`import_data.py`) lê os arquivos `.csv`, cria um banco de dados SQLite com base em um esquema pré-definido (`schema.sql`) e popula as tabelas.
-- **Machine Learning (Jupyter Notebook):** O notebook (`machine_learning.ipynb`) conecta-se ao banco de dados para treinar, testar e avaliar um modelo de classificação com `Scikit-learn`.
-- **Dashboard** Interface criada com uso do `Streamlit` que apresenta gráficos, métricas e possibilita o uso do modelo de Machine Learning.
+## 📁 Arquitetura final
+
+![Arquitetura Final](img/Arquitetura_final.png)
 
 ---
 
-## 🚀 Como Executar o Projeto
+## 🚀 Como Executar  
 
-### 📋 Pré-requisitos
-
-- Python 3.8+
-- Visual Studio Code com as extensões:
-  - PlatformIO IDE: Essencial para compilar e simular o código do ESP32.
-  - Wokwi for VS Code: Necessária para rodar a simulação dos circuitos.
-  - Jupyter: Para executar os notebooks de análise.
-  - SQLite Viewer: (Opcional) Para inspecionar o banco de dados.
+### Pré-requisitos  
+- Python 3.8+  
+- VS Code com: PlatformIO, Wokwi, Jupyter, SQLite Viewer  
 
 
 ### Passo a Passo
@@ -300,7 +294,7 @@ A partir das informações recebidas e registradas, deverão ser armazenadas em 
 
 ---
 
-# 🖥️ Machine Learning
+## 🖥️ Machine Learning
 
 O objetivo do modelo de Machine Learning é classificar o status de operação com base nas leituras dos sensores. O processo foi documentado no notebook `machine_learning.ipynb`.
 
@@ -379,7 +373,7 @@ O objetivo do modelo de Machine Learning é classificar o status de operação c
 
 ## 🧠 Conclusão
 
-refazer
+O produto final atende aos requisitos de coletar, armazenar, treinar e exibir os dados e métricas. O funcionamento dele é local, não foi disponibilizado em ambiente produtivo. Como ponto a melhorar, caso dê continuidade, é a disponibilização em ambiente AWS.
 
 ---
 
