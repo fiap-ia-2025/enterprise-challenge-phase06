@@ -383,7 +383,7 @@ O produto final atende aos requisitos de coletar, armazenar, treinar e exibir os
 
 Assista ao vídeo de até 5 minutos explicando e justificando o projeto desta fase:
 
-[Link para o vídeo no YouTube (Não Listado)](https://www.youtube.com/watch?v=MVAWUlgGIO0)
+[Link para o vídeo no YouTube (Não Listado)](https://www.youtube.com/watch?v=AKxwyx13y0s)
 
 ---
 
