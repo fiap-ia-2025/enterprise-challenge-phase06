@@ -29,7 +29,9 @@
 
 ---
 
-## 📜 Descrição do Projeto  
+## 📜 Descrição do Projeto
+
+![Falha Industria](img/industria_bebidas_falha.png)
 
 Solução de **manutenção preditiva** em linhas de envase de bebidas.  
 - **Sensores simulados (ESP32 + Wokwi):** temperatura (DS18B20), vibração (MPU6050) e nível (HC-SR04).  
